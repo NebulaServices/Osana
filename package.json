@@ -1,0 +1,23 @@
+{
+  "name": "osana",
+  "version": "1.0.0",
+  "description": "",
+  "main": "index.js",
+  "type": "module",
+  "scripts": {
+    "start": "node index.js"
+  },
+  "keywords": [
+    "proxy"
+  ],
+  "author": "Cohen Erickson",
+  "license": "CC BY-ND 4.0",
+  "dependencies": {
+    "bare-server-node": "github:tomphttp/bare-server-node",
+    "fs": "^0.0.1-security",
+    "http": "^0.0.1-security",
+    "https": "^1.0.0",
+    "md5": "^2.3.0",
+    "node-static": "^0.7.11"
+  }
+}
