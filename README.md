@@ -1,6 +1,6 @@
 # Osana
 
-An interception based web proxy inspired by Aero.
+An interception based web proxy inspired by other interception proxies.
 
 Osana intercepts HTTP requests using service workers that comply with the [TompHTTP specifications](https://github.com/tomphttp/specifications).
 
