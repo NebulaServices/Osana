@@ -1,3 +1,3 @@
-import { fetch } from "./osana/fetch.js";
+import { fetchEvent } from "./osana/fetch.js";
 
-self.addEventListener("fetch", event => event.respondWith(fetch(event)));
+self.addEventListener("fetch", event => event.respondWith(fetchEvent(event)));

@@ -1,10 +1,13 @@
 window._location = new Proxy(location, {
   get (target, prop, receiver) {
-    return Reflect.get(...arguments);
+    const url = new URL(location.href.split(_$config.prefix).slice(1).join(_$config.prefix));
+    return url[prop];
   },
   
   set(obj, prop, value) {
-    return Reflect.set(...arguments);
+    const url = new URL(location.href.split(_$config.prefix).slice(1).join(_$config.prefix));
+    url[prop] = value;
+    location.href = _$config.prefix + url.href;
   }
 });
 

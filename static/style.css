@@ -17,6 +17,7 @@ body {
 }
 
 input {
+  background: #fafafa;
   width: 300px;
   padding: 10px;
   border: 1px solid #ccc;
@@ -29,4 +30,17 @@ input {
 
 input:focus {
   outline: none;
+}
+
+@media (prefers-color-scheme: dark) {
+  body {
+    background: #222;
+    color: #ccc;
+  }
+
+  input {
+    background: #222;
+    border: 1px solid #333;
+    color: #ccc;
+  }
 }
