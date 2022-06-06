@@ -98,7 +98,15 @@ self._$rewriteElement = (elm) => {
 
     if (elm.getAttribute("_src")) return;
     elm.setAttribute("_src", elm.src);
-    elm.removeAttribute("srcset");
+    if (elm.srcset) {
+      let sources = elm.srcset.split(/[0-9]x,?/);
+      let srcset = "";
+      for (let i = 0; i < sources.length; i++) {
+        srcset += ", " + _$rewriteURL(sources[i].trim()) + ` ${i+1}x`;
+      }
+      elm.seetAttribute("_srcset", elm.srcset);
+      elm.srcset = srcset;
+    }
     elm.src = _$rewriteURL(elm.src);
 
   } else if (tag === "form") {

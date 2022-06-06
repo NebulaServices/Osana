@@ -2,7 +2,7 @@ import "./codecs.js";
 import "./config.js";
 import "./rewrites.js";
 
-import BareClient from './bare-client/BareClient.js';
+import BareClient from "./bare-client/BareClient.js";
 
 const bareClient = new BareClient(location.origin + _$config.bare);
 
@@ -20,15 +20,22 @@ async function fetchEvent (event) {
   });
   // TODO: rewrite headers
   const headers = Object.fromEntries(response.headers.entries());
-  const text = await response.text();
+  ["cache-control", "content-security-policy", "content-encoding", "content-length", "cross-origin-opener-policy", "cross-origin-opener-policy-report-only", "report-to", "strict-transport-security", "x-content-type-options", "x-frame-options"].forEach((header) => {
+    response.headers.delete(header);
+  });
 
-  let responseText = text;
+  let res;
+  if (/text|application/.test(headers["content-type"])) {
+    res = await response.text();
+  } else {
+    res = response.body
+  }
 
   if (headers["content-type"].startsWith("text/html")) {
     // sadly not supported in a service worker
     // const document = new DOMParser().parseFromString(text, "text/html");
     
-    responseText = `
+    res = `
       <!DOCTYPE html>
       <head>
         <meta charset="utf-8">
@@ -37,22 +44,22 @@ async function fetchEvent (event) {
         <script src="/osana/rewrites.js"></script>
         <script src="/osana/client.js"></script>
         <script src="/osana/mutation.js"></script>
+        <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">
       </head>
-      ${text}
-    `
+      ${res}
+    `;
   } else if (headers["content-type"].startsWith("application/javascript")) {
 
-    responseText = _$rewriteJS(text);
+    res = _$rewriteJS(res);
 
   }
 
   // rewrite redirects
   if (response.status === 301) {
-    console.log(headers);
     response.headers.set("location", _$config.prefix + _$config.codec.encode(headers["location"]));
   }
 
-  return new Response(responseText, {
+  return new Response(res, {
     status: response.status,
     headers: response.headers
   });
