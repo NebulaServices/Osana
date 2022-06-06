@@ -31,7 +31,7 @@ async function fetchEvent (event) {
     res = response.body
   }
 
-  if (headers["content-type"].startsWith("text/html")) {
+  if ((headers["content-type"] || "").startsWith("text/html")) {
     // sadly not supported in a service worker
     // const document = new DOMParser().parseFromString(text, "text/html");
     
@@ -48,9 +48,14 @@ async function fetchEvent (event) {
       </head>
       ${res}
     `;
-  } else if (headers["content-type"].startsWith("application/javascript")) {
+  } else if ((headers["content-type"] || "").startsWith("application/javascript") || event.request.destination === "script") {
 
     res = _$rewriteJS(res);
+
+  } else if ((headers["content-type"] || "").startsWith("text/css") || event.request.destination === "style") {
+
+    console.log(event.request.referrer || event.srcElement.requestURL.href);
+    res = _$rewriteCSS(res, event.request.referrer || event.srcElement.requestURL.href);
 
   }
 
