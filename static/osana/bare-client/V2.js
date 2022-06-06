@@ -1,6 +1,6 @@
 import Client, { BareError, statusCache, statusEmpty } from './Client.js';
 import { split_headers, join_headers } from './splitHeaderUtil.js';
-import md5 from './md5.jd';
+import md5 from './md5.js';
 import global from './global.js';
 
 const { fetch, WebSocket, Request } = global;
