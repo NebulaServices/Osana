@@ -1,21 +1,47 @@
 window._location = new Proxy(location, {
   get (target, prop, receiver) {
-    const url = new URL(location.href.split(_$config.prefix).slice(1).join(_$config.prefix));
+    const url = new URL(_$config.codec.decode(location.href.split(_$config.prefix).slice(1).join(_$config.prefix)));
     return url[prop];
   },
-  
   set(obj, prop, value) {
-    const url = new URL(location.href.split(_$config.prefix).slice(1).join(_$config.prefix));
+    const url = new URL(_$config.codec.decode(location.href.split(_$config.prefix).slice(1).join(_$config.prefix)));
     url[prop] = value;
     location.href = _$config.prefix + url.href;
   }
+});
+
+window._navigator = new Proxy(navigator, {
+
 });
 
 window._window = new Proxy(window, {
   get (target, prop, reciever) {
     if (prop === "_location") {
       return _location;
+    } else if (prop === "origin") {
+      return _location.href;
     }
-    return Reflect.get(...arguments);
+    return window[prop];
   }
+});
+window.open = new Proxy(open, {
+  apply (target, thisArg, args) {
+    if (args[0] && args[0] !== "about:blank") {
+      args[0] = _$rewriteURL(args[0]);
+    }
+    Reflect.apply(...arguments);
+  }
+});
+//_window.origin = _location.origin;
+
+document._location = _location
+document.baseURI = _location.href;
+document.documentURI = _location.href;
+Object.defineProperty(document, "domain", {
+	get() {
+		return _location.hostname;
+	},
+	set(value) {
+		return value;
+	}
 });
