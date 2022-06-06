@@ -13,7 +13,12 @@ const lsServe = new nodeStatic.Server("ls");
 const httpServer = http.createServer();
 const httpsServer = https.createServer({});
 
-httpServer.on("request", (req, res) => {
+httpServer.on("request", request);
+httpsServer.on("request", request);
+httpServer.on("upgrade", upgrade);
+httpsServer.on("upgrade", upgrade);
+
+function request (req, res) {
   const ip = req.headers['x-forwarded-for'] || req.connection.remoteAddress;
   
   // block LS bots
@@ -24,12 +29,12 @@ httpServer.on("request", (req, res) => {
 
   if (bare.route_request(req, res)) return;
   serve.serve(req, res);
-});
+}
 
-httpServer.on("upgrade", (req, socket, head) => {
+function upgrade (req, socket, head) {
   if (bare.route_upgrade(req, socket, head)) return;
   socket.end();
-});
+};
 
 fs.readdir("/etc/letsencrypt/live", { withFileTypes: true }, (err, files) => {
   if (!err) {
