@@ -40,7 +40,7 @@ self._$rewriteURL = (url, ref) => {
 }
 
 self._$rewriteJS = (js) => {
-  return js.replace(/location|window/g, "_$&");
+  return js.replace(/location|window/g, "_$&").replace(/\/\*# ?sourcemappingurl=[^\s]+?\*\//gi, "");
 }
 
 // helper function for css rewriting
@@ -54,6 +54,8 @@ const braidArrays = (...arrays) => {
   return braided;
 };
 
+// TODO: fix some rewriting issues with local urls
+// example: 'url(/assets/style.css)'
 self._$rewriteCSS = (css = "", ref) => {
   // rewrite url()'s in css
   let sections = css.split(/url\([^\s]+?\)/gi);
@@ -63,7 +65,7 @@ self._$rewriteCSS = (css = "", ref) => {
   urls.forEach((url) => {
     parsedURLs.push(`url('${location.origin}${_$rewriteURL(url.split(/\(("|')?|("|')?\)/)[3], ref)}')`);
   });
-  return braidArrays(sections, parsedURLs).join("");
+  return braidArrays(sections, parsedURLs).join("").replace(/\/\*# ?sourcemappingurl=[^\s]+?\*\//gi, "");
 }
 
 self._$rewriteElement = (elm) => {
@@ -82,7 +84,7 @@ self._$rewriteElement = (elm) => {
   // rewrite <link>'s
   } else if (tag === "link") {
 
-    if (["icon", "shortcut icon", "apple-touch-icon", "manifest"].includes(elm.rel)) {
+    if (["icon", "shortcut icon", "apple-touch-icon", "manifest", "prefetch", "preload", "canonical", "next", "alternate"].includes(elm.rel)) {
 
       if (elm.getAttribute("_href")) return;
       elm.setAttribute("_href", elm.href);
@@ -149,15 +151,17 @@ self._$rewriteElement = (elm) => {
 
     if (elm.getAttribute("_src")) return;
     elm.setAttribute("_src", elm.src);
-    if (elm.srcset) {
-      let sources = elm.srcset.split(/[0-9]x,?/);
-      let srcset = "";
-      for (let i = 0; i < sources.length; i++) {
-        srcset += ", " + _$rewriteURL(sources[i].trim()) + ` ${i+1}x`;
-      }
-      elm.setAttribute("_srcset", elm.srcset);
-      elm.srcset = srcset;
-    }
+    // TODO: fix
+    // if (elm.srcset) {
+    //   let sources = elm.srcset.split(/[0-9]x,?/);
+    //   let srcset = "";
+    //   for (let i = 0; i < sources.length; i++) {
+    //     srcset += ", " + _$rewriteURL(sources[i].trim()) + ` ${i+1}x`;
+    //   }
+    //   elm.setAttribute("_srcset", elm.srcset);
+    //   elm.srcset = srcset;
+    // }
+    elm.removeAttribute("srcset");
     elm.src = _$rewriteURL(elm.src);
 
   // rewrite <form>'s
@@ -168,6 +172,41 @@ self._$rewriteElement = (elm) => {
       elm.setAttribute("_action", elm.action);
       elm.action = _$rewriteURL(elm.action);
     }
+
+  // rewrite <embed>'s
+  } else if (tag == "embed") {
+
+    if (elm.getAttribute("_src")) return;
+    elm.setAttribute("_src", elm.src);
+    elm.src = _$rewriteURL(elm.src);
+
+  // rewrite <object>'s
+  } else if (tag === "object") {
+
+    if (elm.getAttribute("_data")) return;
+    elm.setAttribute("_data", elm.data);
+    elm.data = _$rewriteURL(elm.data);
+
+  // rewrite <video>'s
+  } else if (tag === "video") {
+
+    if (elm.getAttribute("_src")) return;
+    elm.setAttribute("_src", elm.src);
+    elm.src = _$rewriteURL(elm.src);
+
+  // rewrite <audio>'s
+  } else if (tag === "audio") {
+
+    if (elm.getAttribute("_src")) return;
+    elm.setAttribute("_src", elm.src);
+    elm.src = _$rewriteURL(elm.src);
+
+  // rewrite <source>'s
+  } else if (tag === "source") {
+
+    if (elm.getAttribute("_src")) return;
+    elm.setAttribute("_src", elm.src);
+    elm.src = _$rewriteURL(elm.src);
 
   }
 }

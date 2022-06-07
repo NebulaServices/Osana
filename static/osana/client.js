@@ -10,10 +10,6 @@ window._location = new Proxy(location, {
   }
 });
 
-window._navigator = new Proxy(navigator, {
-
-});
-
 window._window = new Proxy(window, {
   get (target, prop, reciever) {
     if (prop === "_location") {
@@ -33,6 +29,19 @@ window.open = new Proxy(open, {
   }
 });
 //_window.origin = _location.origin;
+
+window.fetch = new Proxy(fetch, {
+  apply (target, thisArg, args) {
+    args[0] = _$rewriteURL(args[0]);
+    Reflect.apply(...arguments);
+  }
+});
+
+const XMLOpen = window.XMLHttpRequest.prototype.open;
+window.XMLHttpRequest.prototype.open = function (...args) {
+  args[1] = _$rewriteURL(args[1]);
+  return XMLOpen.call(this, ...args);
+};
 
 document._location = _location
 document.baseURI = _location.href;
