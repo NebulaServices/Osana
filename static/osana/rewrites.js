@@ -1,72 +1,37 @@
-self._$rewriteURL = (url, ref) => {
-  if (/^(data|mailto|chrome-extension):/.test(url)) return url;
-  if (url.startsWith(_$config.prefix)) return url;
-
-  url = url.split(location.host);
-  if (url.length > 1) {
-    url = url.slice(1).join(location.host);
-  } else {
-    url = url.join(location.host);
-  }
-
-  // http(s)://example.com/
-  if (/^https?:\/\//.test(url)) {
-    return _$config.prefix + _$config.codec.encode(url);
-  }
-
-  const _location = new URL(ref || _$config.codec.decode(location.href.split(_$config.prefix).slice(1).join(_$config.prefix)));
-
-  // //example.com/
-  if (/^\/\//.test(url)) {
-    return _$config.prefix + _$config.codec.encode(_location.protocol + url);
-  }
-
-  // ./script.js
-  if (/^\.\//.test(url)) {
-    let path = _location.pathname;
-    path += url.slice(_location.pathname.slice(-1) !== "/" ? 1 : 2);
-    return _$config.prefix + _$config.codec.encode(_location.protocol + "//" + _location.host + path);
-  }
-
-  // /about.html
-  if (/^\//.test(url)) {
-    return _$config.prefix + _$config.codec.encode(_location.protocol + "//" + _location.host + url);
-  }
-
-  // script.js
-  let path = _location.pathname;
-  path += _location.pathname.slice(-1) !== "/" ? "/" : "" + url;
-  return _$config.prefix + _$config.codec.encode(_location.protocol + "//" + _location.host + path);
-}
-
 self._$rewriteJS = (js) => {
-  return js.replace(/location|window/g, "_$&").replace(/\/\*# ?sourcemappingurl=[^\s]+?\*\//gi, "");
+  return js.replace(/location|window/g, "_$&");
 }
 
-// helper function for css rewriting
-const braidArrays = (...arrays) => {
-  const braided = [];
-  for (let i = 0; i < Math.max(...arrays.map(a => a.length)); i++) {
-    arrays.forEach((array) => {
-      if (array[i] !== undefined) braided.push(array[i]);
-    });
+function braidArrays (arr1, arr2) {
+  let len = Math.max(arr1.length, arr2.length);
+  let braided = [];
+  for (let i = 0; i < len; i++) {
+    braided.push(arr1[i]);
+    braided.push(arr2[i]);
   }
   return braided;
-};
+}
 
-// TODO: fix some rewriting issues with local urls
-// example: 'url(/assets/style.css)'
-self._$rewriteCSS = (css = "", ref) => {
-  // rewrite url()'s in css
+// rewrite url()'s in css
+self._$rewriteCSS = (css = "") => {
   let sections = css.split(/url\([^\s]+?\)/gi);
   if (!sections[1]) return css;
   let urls = css.match(/url\([^\s]+?\)/gi);
   let parsedURLs = [];
   urls.forEach((url) => {
-    parsedURLs.push(`url('${location.origin}${_$rewriteURL(url.split(/\(("|')?|("|')?\)/)[3], ref)}')`);
+    if (/https?:\/\//.test(url.split(/\(("|')?|("|')?\)/)[3])) {
+      parsedURLs.push(`url('${location.origin}${_$rewriteURL(url.split(/\(("|')?|("|')?\)/)[3])}')`);
+    } else {
+      parsedURLs.push(url);
+    }
   });
-  return braidArrays(sections, parsedURLs).join("").replace(/\/\*# ?sourcemappingurl=[^\s]+?\*\//gi, "");
+  return braidArrays(sections, parsedURLs).join("");
 }
+
+
+
+
+
 
 self._$rewriteElement = (elm) => {
   if (!elm.tagName) return;
@@ -94,7 +59,6 @@ self._$rewriteElement = (elm) => {
 
       if (elm.getAttribute("_osana")) return;
       if (elm.href) elm.href = _$rewriteURL(elm.href);
-      elm.innerHTML = _$rewriteCSS(elm.innerHTML);
       elm.setAttribute("_osana", true);
 
     }
@@ -123,15 +87,9 @@ self._$rewriteElement = (elm) => {
 
     }
 
-  // rewrite <iframe>'s
-  } else if (tag === "iframe") {
-
-    if (elm.getAttribute("_src")) return;
-    elm.setAttribute("_src", elm.src);
-    elm.src = _$rewriteURL(elm.src);
-
   // rewrite <script>'s
   } else if (tag === "script") {
+
 
     if (elm.getAttribute("_osana")) return;
     const script = document.createElement("script");
@@ -146,24 +104,6 @@ self._$rewriteElement = (elm) => {
     elm.after.bind(script);
     elm.remove();
 
-  // rewrite <img>'s
-  } else if (tag === "img") {
-
-    if (elm.getAttribute("_src")) return;
-    elm.setAttribute("_src", elm.src);
-    // TODO: fix
-    // if (elm.srcset) {
-    //   let sources = elm.srcset.split(/[0-9]x,?/);
-    //   let srcset = "";
-    //   for (let i = 0; i < sources.length; i++) {
-    //     srcset += ", " + _$rewriteURL(sources[i].trim()) + ` ${i+1}x`;
-    //   }
-    //   elm.setAttribute("_srcset", elm.srcset);
-    //   elm.srcset = srcset;
-    // }
-    elm.removeAttribute("srcset");
-    elm.src = _$rewriteURL(elm.src);
-
   // rewrite <form>'s
   } else if (tag === "form") {
 
@@ -173,8 +113,8 @@ self._$rewriteElement = (elm) => {
       elm.action = _$rewriteURL(elm.action);
     }
 
-  // rewrite <embed>'s
-  } else if (tag == "embed") {
+  // rewrite src attrs
+  } else if (["img", "embed", "video", "audio", "source", "iframe"].includes(tag)) {
 
     if (elm.getAttribute("_src")) return;
     elm.setAttribute("_src", elm.src);
@@ -186,27 +126,13 @@ self._$rewriteElement = (elm) => {
     if (elm.getAttribute("_data")) return;
     elm.setAttribute("_data", elm.data);
     elm.data = _$rewriteURL(elm.data);
-
-  // rewrite <video>'s
-  } else if (tag === "video") {
-
-    if (elm.getAttribute("_src")) return;
-    elm.setAttribute("_src", elm.src);
-    elm.src = _$rewriteURL(elm.src);
-
-  // rewrite <audio>'s
-  } else if (tag === "audio") {
-
-    if (elm.getAttribute("_src")) return;
-    elm.setAttribute("_src", elm.src);
-    elm.src = _$rewriteURL(elm.src);
-
-  // rewrite <source>'s
-  } else if (tag === "source") {
-
-    if (elm.getAttribute("_src")) return;
-    elm.setAttribute("_src", elm.src);
-    elm.src = _$rewriteURL(elm.src);
-
+  
+  // rewrite <style>'s
+  } else if (tag === "style") {
+      
+    if (elm.getAttribute("_osana")) return;
+    elm.innerHTML = _$rewriteCSS(elm.innerHTML);
+    elm.setAttribute("_osana", true);
+    
   }
 }
