@@ -10,7 +10,7 @@ const bareClient = new BareClient(location.origin + _$config.bare);
 async function fetchEvent (event) {
   // fix errors when chrome extensions load resources
   // don't parse scripts if it is an osana script
-  if (!/^https?:\/\//i.test(event.request.url) || /^\/osana/.test(new URL(_$config.codec.decode(event.request.url)).pathname)) {
+  if (!/^https?:\/\//i.test(event.request.url) || /^\/osana/.test(new URL(event.request.url).pathname)) {
     return await fetch(event.request.url);
   }
 
@@ -46,7 +46,6 @@ async function fetchEvent (event) {
 
   if ((headers["content-type"] || "").startsWith("text/html")) {
     res = `
-      <!DOCTYPE html>
       <head>
         <meta charset="utf-8">
         <script src="/osana/codecs.js"></script>

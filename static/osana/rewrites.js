@@ -2,15 +2,8 @@ self._$rewriteJS = (js) => {
   return js.replace(/location|window/g, "_$&");
 }
 
-function braidArrays (arr1, arr2) {
-  let len = Math.max(arr1.length, arr2.length);
-  let braided = [];
-  for (let i = 0; i < len; i++) {
-    braided.push(arr1[i]);
-    braided.push(arr2[i]);
-  }
-  return braided;
-}
+// helper function for rewriting css
+let weave=(...r)=>{for(var a=1,f=0,h=[];a;)a=0,r.forEach(r=>{r[f]&&(h.push(r[f]),a=1)}),f++;return h}
 
 // rewrite url()'s in css
 self._$rewriteCSS = (css = "") => {
@@ -19,13 +12,13 @@ self._$rewriteCSS = (css = "") => {
   let urls = css.match(/url\([^\s]+?\)/gi);
   let parsedURLs = [];
   urls.forEach((url) => {
-    if (/https?:\/\//.test(url.split(/\(("|')?|("|')?\)/)[3])) {
-      parsedURLs.push(`url('${location.origin}${_$rewriteURL(url.split(/\(("|')?|("|')?\)/)[3])}')`);
+    if (/(https?:)?\/\//.test(url.split(/\(("|')?|("|')?\)/)[3])) {
+      parsedURLs.push(`url('${_$rewriteURL(url.split(/\(("|')?|("|')?\)/)[3])}')`);
     } else {
       parsedURLs.push(url);
     }
   });
-  return braidArrays(sections, parsedURLs).join("");
+  return weave(sections, parsedURLs).join("");
 }
 
 
@@ -38,6 +31,11 @@ self._$rewriteElement = (elm) => {
   const tag = elm.tagName.toLowerCase();
   elm.removeAttribute("integrity");
   elm.removeAttribute("nonce");
+
+  // rewrite style attr
+  if (!elm.getAttribute("_style") && elm.getAttribute("style")) {
+    elm.setAttribute("style", _$rewriteCSS(elm.getAttribute("style")));
+  }
   
   // rewrite <a>'s
   if (tag === "a") {
@@ -115,6 +113,7 @@ self._$rewriteElement = (elm) => {
 
   // rewrite src attrs
   } else if (["img", "embed", "video", "audio", "source", "iframe"].includes(tag)) {
+    // TODO: proxy srcset attrs for images
 
     if (elm.getAttribute("_src")) return;
     elm.setAttribute("_src", elm.src);
