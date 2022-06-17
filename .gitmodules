@@ -1,0 +1,3 @@
+[submodule "static/Osana"]
+	path = static/Osana
+	url = https://github.com/NebulaServices/Osana
