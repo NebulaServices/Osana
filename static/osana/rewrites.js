@@ -3,7 +3,7 @@ self._$rewriteJS = (js) => {
 }
 
 // helper function for rewriting css
-let weave=(...r)=>{for(var a=1,f=0,h=[];a;)a=0,r.forEach(r=>{r[f]&&(h.push(r[f]),a=1)}),f++;return h}
+let weave=(...r)=>{for(var a=1,f=0,h=[];a;)a=0,r.forEach(r=>{r[f]&&(h.push(r[f]),a=1)}),f++;return h};
 
 // rewrite url()'s in css
 self._$rewriteCSS = (css = "") => {
@@ -20,10 +20,6 @@ self._$rewriteCSS = (css = "") => {
   });
   return weave(sections, parsedURLs).join("");
 }
-
-
-
-
 
 
 self._$rewriteElement = (elm) => {
@@ -129,9 +125,9 @@ self._$rewriteElement = (elm) => {
   // rewrite <style>'s
   } else if (tag === "style") {
       
-    if (elm.getAttribute("_osana")) return;
-    elm.innerHTML = _$rewriteCSS(elm.innerHTML);
-    elm.setAttribute("_osana", true);
+    // if (elm.getAttribute("_osana")) return;
+    // elm.innerHTML = _$rewriteCSS(elm.innerHTML);
+    // elm.setAttribute("_osana", true);
     
   }
 }
