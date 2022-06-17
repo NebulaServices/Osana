@@ -1,12 +1,12 @@
-<center>
-<img src="static/icon.png" style="width: 200px;">
-<h1>Osana</h1>
-An interception based web proxy inspired by other interception proxies.
+<p align="center">
+  <img src="static/icon.png" style="width: 200px;">
+</p>
+<h1 align="center">Osana</h1>
+<p align="center">An interception based web proxy inspired by other interception proxies.</p>
 
-Osana intercepts HTTP requests using service workers that comply with the [TompHTTP specifications](https://github.com/tomphttp/specifications).
+<p align="center">Osana intercepts HTTP requests using service workers that comply with the <a href="https://github.com/tomphttp/specifications">TompHTTP specifications</a>.</p>
 
-<h1>Installation and Setup</h1>
-</center>
+<h1 align="center">Installation and Setup</h1>
 
 ```bash
 $ git clone https://github.com/NebulaServices/Osana-Node.git
@@ -16,11 +16,9 @@ $ npm install
 $ npm start
 ```
 
-<center>
-<h1>Configuration</h1>
-
+<h1 align="center">Configuration</h1>
+  
 `config.js`
-</center>
 
 ```js
 self._$config = {
