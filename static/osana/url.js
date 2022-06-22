@@ -1,5 +1,6 @@
 self._$combine = (url, path) => {
   url = new URL(url);
+  url.pathname = url.pathname.replace(/[^/]+?\.[^/]+?$/, "");
   if (/^\//.test(path)) {
     return url.origin + path;
   } else if (/^\.\//.test(path)) {
@@ -12,7 +13,7 @@ self._$combine = (url, path) => {
 }
 
 self._$rewriteURL = (url) => {
-  if (/^(data|mailto|chrome-extension):/.test(url)) return url;
+  if (/^(about|javascript|blob|data|mailto|chrome-extension):/.test(url)) return url;
   if (url.startsWith(_$config.prefix)) return url;
 
   const _location = new URL(_$config.codec.decode(location.href.replace(new RegExp(`^.+?${_$config.prefix}`), "")));
