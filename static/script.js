@@ -1,6 +1,7 @@
 const shortcuts = {
   "google": "https://www.google.com/",
-  "discord": "https://discord.com/"
+  "discord": "https://discord.com/login",
+  "youtube": "https://www.youtube.com/"
 }
 
 const search = document.getElementById("search");
