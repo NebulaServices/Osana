@@ -15,13 +15,6 @@ self._$rewriteURL = (url) => {
   if (/^(data|mailto|chrome-extension):/.test(url)) return url;
   if (url.startsWith(_$config.prefix)) return url;
 
-  // url = url.split(location.host);
-  // if (url.length > 1) {
-  //   url = url.slice(1).join(location.host);
-  // } else {
-  //   url = url.join(location.host);
-  // }
-
   const _location = new URL(_$config.codec.decode(location.href.replace(new RegExp(`^.+?${_$config.prefix}`), "")));
 
   if (/^https?:\/\//.test(url)) {
