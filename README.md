@@ -40,12 +40,14 @@ export default self.__config;
 
 
 <h2>Production</h2>
+
 ```bash
 $ npm run build
 $ npm run start
 ```
 
 <h2>Development</h2>
+
 ```bash
 $ npm run dev
 ```
