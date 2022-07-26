@@ -69,6 +69,10 @@ export default function rewriteNode (node: any, origin?: string): any {
       case "meta":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "http-equiv") {
+            if (node.attrs[i].value === "Content-Security-Policy") {
+              node.attrs.push({ name: "data-Content-Security-Policy", value: node.attrs[i].value });
+              node.attrs[i].value = "*";
+            }
             for (let i in node.attrs) {
               if (node.attrs[i].name === "content") {
                 node.attrs.push({ name: "data-content", value: node.attrs[i].value });

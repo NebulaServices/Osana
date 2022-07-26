@@ -35,6 +35,11 @@ export default function rewriteURL (url: string, origin?: string): string {
 }
 
 export function unwriteURL (url: string): string {
-  let newURL = new URL(window.__config.codec.decode(new URL(url).pathname.replace(new RegExp(`^${window.__config.prefix}`), "")));
+  let newURL;
+  if (/^https?:\/\//.test(url)) {
+    newURL = new URL(window.__config.codec.decode(new URL(url).pathname.replace(new RegExp(`^${window.__config.prefix}`), "")));
+  } else {
+    newURL = new URL(window.__config.codec.decode(url.replace(new RegExp(`^${window.__config.prefix}`), "")));
+  }
   return newURL.href;
 }

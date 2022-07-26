@@ -1,12 +1,5 @@
 import { LocationProxy } from "./location";
 
-// FIXME: for(;__window !== __window.parent;) {
-// FIXME:   if (__window.parent.location.href) {
-// FIXME:     __window = __window.parent;
-// FIXME:   }
-// FIXME: }
-
-
 export class WindowProxy {
   constructor (scope: Window) {
     return new Proxy(scope, {
@@ -20,7 +13,8 @@ export class WindowProxy {
           return new LocationProxy(target);
         }
         if (["parent", "top"].includes(prop)) {
-        //  return new WindowProxy(target[prop]);
+          if (window === window[prop as any]) return window.__window; 
+          else return new WindowProxy(target[prop as any]);
         }
         if (["window", "self", "globalThis"].includes(prop)) {
           return new WindowProxy(target);

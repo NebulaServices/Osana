@@ -12,6 +12,7 @@ declare global {
     __location: Location;
     __window: Window;
     __self: Window;
+    __top: Window;
   }
 }
 
@@ -20,7 +21,8 @@ window.Request = RequestProxy;
 window.history.pushState = History.pushState;
 window.history.replaceState = History.replaceState;
 window.__parent = WindowProxy.parent;
-window.__location = LocationProxy;
+window.__top = WindowProxy.top;
 window.__window = WindowProxy;
+window.__location = LocationProxy;
 window.__self = WindowProxy;
 window.XMLHttpRequest.prototype.open = XMLHttpRequestProxy;

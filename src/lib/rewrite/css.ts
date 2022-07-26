@@ -12,7 +12,9 @@ export default function rewriteCSS (css: string): string {
           const declaration = rule.declarations[j];
           if (declaration.type === "declaration") {
             if (/url\(['"]?(https?:)?\/\/.*['"]?\)$/i.test(declaration.value)) {
-              data.stylesheet.rules[i].declarations[j].value = declaration.value.replace(/[^url('"]+.+?[^'")]+/, rewriteURL);
+              data.stylesheet.rules[i].declarations[j].value = declaration.value.replace(/[^url('"]+.+?[^'")]+/, (url: string) => {
+                return rewriteURL(url);
+              });
             }
           }
         }
