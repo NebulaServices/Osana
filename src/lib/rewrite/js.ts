@@ -21,6 +21,12 @@ export default function rewriteJS (js: string): string {
         case "parent":
           node.name = "__parent";
           break;
+        case "localStorage":
+          node.name = "__localStorage";
+          break;
+        case "sessionStorage":
+          node.name = "__sessionStorage";
+          break;
       }
     }
 
