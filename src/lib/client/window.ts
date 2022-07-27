@@ -5,19 +5,20 @@ export class WindowProxy {
     return new Proxy(scope, {
       get (target: any, prop: string, receiver: any): any {
         if (typeof target[prop] === "function") {
-          return (...args: any[]) => {
-            return target[prop].call(window, ...args);
+          return function () {
+            return target[prop].apply(window, arguments);
           }
-        }
-        if (prop === "location") {
+        } else if (prop === "location") {
           return new LocationProxy(target);
-        }
-        if (["parent", "top"].includes(prop)) {
+        } else if (["parent", "top"].includes(prop)) {
           if (window === window[prop as any]) return window.__window; 
           else return new WindowProxy(target[prop as any]);
-        }
-        if (["window", "self", "globalThis"].includes(prop)) {
+        } else if (["window", "self", "globalThis"].includes(prop)) {
           return new WindowProxy(target);
+        } else if (prop === "localStorage") {
+          return window.__localStorage;
+        } else if (prop === "sessionStorage") {
+          return window.__sessionStorage;
         }
         return target[prop];
       }

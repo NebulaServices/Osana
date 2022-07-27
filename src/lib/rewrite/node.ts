@@ -1,4 +1,5 @@
 import rewriteURL from "./url";
+import rewriteCSS from "./css";
 
 export default function rewriteNode (node: any, origin?: string): any {
   if (node.tagName) {
@@ -24,6 +25,21 @@ export default function rewriteNode (node: any, origin?: string): any {
             node.attrs.push({ name: "data-nonce", value: node.attrs[i].value });
             node.attrs[i].value = "";
           }
+        }
+        break;
+      
+      case "style":
+        for (let i in node.attrs) {
+          if (node.attrs[i].name === "integrity") {
+            node.attrs.push({ name: "data-integrity", value: node.attrs[i].value });
+            node.attrs[i].value = "";
+          } else if (node.attrs[i].name === "nonce") {
+            node.attrs.push({ name: "data-nonce", value: node.attrs[i].value });
+            node.attrs[i].value = "";
+          }
+        }
+        for (let i in node.childNodes) {
+          node.childNodes[i].value = rewriteCSS(node.childNodes[i].value, origin);
         }
         break;
 

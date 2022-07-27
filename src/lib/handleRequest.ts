@@ -22,7 +22,6 @@ export default async function handleRequest (event: FetchEvent): Promise<Respons
     return fetch(event.request.url);
   }
   const requestURL = new URL((new URL(url).pathname + new URL(url).search).replace(config.prefix, ""));
-  //const requestHeaders = rewriteHeaders(Object.fromEntries(event.request.headers.entries()), requestURL);
   const requestHeaders = Object.fromEntries(event.request.headers.entries());
 
   const response = await bareClient.fetch(requestURL, {

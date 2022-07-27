@@ -14,7 +14,7 @@ function combine (url: URL, path: string) {
 }
 
 export default function rewriteURL (url: string, origin?: string): string {
-  let fakeLocation;
+  let fakeLocation = {} as any;
   if ("window" in self) {
     fakeLocation = new URL(window.__config.codec.decode(location.pathname.replace(new RegExp(`^${window.__config.prefix}`), "")));
   }
@@ -27,7 +27,7 @@ export default function rewriteURL (url: string, origin?: string): string {
   } else if (/^https?:\/\//.test(url)) {
     return `${config.prefix}${config.codec.encode(url)}`;
   } else if (/^\/\//.test(url)) {
-    return `${config.prefix}${config.codec.encode(fakeLocation.protocol + url)}`;
+    return `${config.prefix}${config.codec.encode(fakeLocation.protocol ? fakeLocation.protocol : "https:" + url)}`;
   } else {
     if (!fakeLocation) return url;
     return `${config.prefix}${config.codec.encode(combine(fakeLocation, url))}`;
@@ -35,6 +35,7 @@ export default function rewriteURL (url: string, origin?: string): string {
 }
 
 export function unwriteURL (url: string): string {
+  if(!url) return url;
   let newURL;
   if (/^https?:\/\//.test(url)) {
     newURL = new URL(window.__config.codec.decode(new URL(url).pathname.replace(new RegExp(`^${window.__config.prefix}`), "")));

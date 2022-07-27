@@ -1,8 +1,8 @@
 import * as CSS from "./css/index";
 import rewriteURL from "./url";
 
-export default function rewriteCSS (css: string): string {
-  //try {
+export default function rewriteCSS (css: string, origin?: string): string {
+  try {
     const data = CSS.parse(css);
 
     for (let i in data.stylesheet.rules) {
@@ -11,9 +11,9 @@ export default function rewriteCSS (css: string): string {
         for (let j in rule.declarations) {
           const declaration = rule.declarations[j];
           if (declaration.type === "declaration") {
-            if (/url\(['"]?(https?:)?\/\/.*['"]?\)$/i.test(declaration.value)) {
+            if (/url\(['"]?(https?:)?\/\/.*['"]?\)/i.test(declaration.value)) {
               data.stylesheet.rules[i].declarations[j].value = declaration.value.replace(/[^url('"]+.+?[^'")]+/, (url: string) => {
-                return rewriteURL(url);
+                return rewriteURL(url, origin);
               });
             }
           }
@@ -22,7 +22,8 @@ export default function rewriteCSS (css: string): string {
     }
   
     return CSS.stringify(data);
-  //} catch {
-  //  return css;
-  //}
+  } catch (e) {
+    console.error(e);
+    return css;
+  }
 }
