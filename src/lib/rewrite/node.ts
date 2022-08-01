@@ -59,7 +59,19 @@ export default function rewriteNode (node: any, origin?: string): any {
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
           } else if (node.attrs[i].name === "srcset") {
             node.attrs.push({ name: "data-srcset", value: node.attrs[i].value });
-            node.attrs[i].value = "";
+            node.attrs[i].value = rewriteSrcset(node.attrs[i].value, origin);
+          }
+        }
+        break;
+
+      case "source":
+        for (let i in node.attrs) {
+          if (node.attrs[i].name === "src") {
+            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "srcset") {
+            node.attrs.push({ name: "data-srcset", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteSrcset(node.attrs[i].value, origin);
           }
         }
         break;
@@ -107,4 +119,15 @@ export default function rewriteNode (node: any, origin?: string): any {
   }
 
   return node;
+}
+
+function rewriteSrcset (value: string, origin?: string): string {
+  const urls = value.split(/ [0-9]+x,? ?/g);
+  if (!urls) return "";
+  const sufixes = value.match(/ [0-9]+x,? ?/g);
+  if (!sufixes) return "";
+  const rewrittenUrls = urls.map((url, i) => {
+    if (url && sufixes[i]) return rewriteURL(url, origin) + sufixes[i];
+  });
+  return rewrittenUrls.join("");
 }

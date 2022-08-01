@@ -17,11 +17,11 @@ declare global {
 const bareClient = new BareClient(config.bare);
 
 export default async function handleRequest (event: FetchEvent): Promise<Response> {
-  const url = config.codec.decode(new URL(event.request.url));
-  if (!/^https?:\/\//.test(config.codec.decode(new URL(event.request.url).pathname.replace(config.prefix, "")))) {
+  const url = config.codec.decode(new URL(event.request.url).pathname.replace(config.prefix, ""));
+  if (!/^https?:\/\//.test(url)) {
     return fetch(event.request.url);
   }
-  const requestURL = new URL((new URL(url).pathname + new URL(url).search).replace(config.prefix, ""));
+  const requestURL = new URL(url);
   const requestHeaders = Object.fromEntries(event.request.headers.entries());
 
   const response = await bareClient.fetch(requestURL, {

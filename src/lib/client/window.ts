@@ -4,9 +4,18 @@ export class WindowProxy {
   constructor (scope: Window) {
     return new Proxy(scope, {
       get (target: any, prop: string, receiver: any): any {
-        if (typeof target[prop] === "function") {
-          return function () {
-            return target[prop].apply(window, arguments);
+        if (target[prop] && target[prop].toString && typeof target[prop] === "function" && /{ \[native code\] }/.test(target[prop].toString()) && prop !== "Symbol") {
+          // return a function that can also be called with the new operator
+          if (isFunction(target[prop]) === "class") {
+            return class extends target[prop] {
+              constructor (...args: any[]) {
+                super(...args);
+              }
+            }
+          } else {
+            return function () {
+              return target[prop].apply(window, arguments);
+            }
           }
         } else if (prop === "location") {
           return new LocationProxy(target);
@@ -24,6 +33,19 @@ export class WindowProxy {
       }
     });
   }
+}
+
+// https://stackoverflow.com/a/69316645/14635947/
+function isFunction(x: any): string {
+  return typeof x === 'function'
+    ? x.prototype
+      ? Object.getOwnPropertyDescriptor(x, 'prototype').writable
+        ? 'function'
+        : 'class'
+    : x.constructor.name === 'AsyncFunction'
+    ? 'async'
+    : 'arrow'
+  : '';
 }
 
 export default new WindowProxy(window) as any;
