@@ -1,21 +1,23 @@
+<!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="theme-color" content="#1764FF">
-    <link rel="stylesheet" href="./style.css">
+    <link rel="stylesheet" href="/dist.css">
     <title>Osana</title>
-    <script src="./osana/codecs.js"></script>
-    <script src="./osana/config.js"></script>
-    <script src="./script.js" defer></script>
-    <link rel="icon" href="/favicon.ico">
+    <meta property="og:title" content="Osana" />
+    <meta name="description" content="An interception based web proxy." />
+    <meta property="og:description" content="An interception based web proxy." />
+    <script src="/config.js"></script>
+    <script src="/script.js" defer></script>
   </head>
-  <body>
-    <div class="center">
-      <img style="height: 96px;" src="./icon.png" alt="Osana">
-      <h1>Osana</h1>
-      <input type="text" id="search" placeholder="Search The Web">
+  <body class="bg-[#1764FF]">
+    <div class="h-full w-full flex justify-center items-center flex-col">
+      <img class="h-24" src="/icon.png" alt="Osana">
+      <h1 class="text-white m-3 text-4xl font-semibold">Osana</h1>
+      <input class="bg-transparent w-80 border m-3 px-3 py-2 rounded-lg text-white focus:outline-none placeholder:text-white" type="text" id="search" placeholder="Search The Web">
     </div>
+    <p class="fixed bottom-0 left-0 text-neutral-200">Osana ©️ Nebula Services 2022</p>
   </body>
 </html>

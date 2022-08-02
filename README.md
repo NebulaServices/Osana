@@ -6,24 +6,51 @@
 
 <p align="center">Osana intercepts HTTP requests using service workers that comply with the <a href="https://github.com/tomphttp/specifications">TompHTTP specifications</a>.</p>
 
-<h1 align="center">Installation and Setup</h1>
+<h1 align="center">Cloning and installing dependencies</h1>
 
 ```bash
-$ git clone https://github.com/NebulaServices/Osana-Node.git
-$ git submodule update --init --recursive
+$ git clone https://github.com/NebulaServices/Osana.git
 $ cd Osana
-$ npm install
-$ npm start
+$ npm ci
 ```
 
 <h1 align="center">Configuration</h1>
   
-`config.js`
+`src/config.ts`
 
-```js
-self._$config = {
-  bare: "/bare/",     // Bare server URL
-  prefix: "/~/",      // Proxy URL prefix
-  codec: _$codecs.xor // URL Encoding
+```ts
+import * as codecs from "./lib/util/codecs";
+
+declare global {
+  interface Window {
+    __osana$config: any;
+  }
 }
+
+self.__osana$config = {
+  bare: `${location.origin}/bare/`,
+  prefix: "/~/",
+  codec: codecs.none,
+  files: {
+    config: "/config.js",
+    client: "/client.js",
+    sw: "/sw.js"
+  }
+}
+
+export default self.__osana$config;
+```
+
+<h1 align="center">Building Scripts</h1>
+
+The scripts will appear in the /dist directory.
+
+```bash
+npm run build
+```
+
+<h1 align="center">Demo</h1>
+
+```bash
+npm run start
 ```
