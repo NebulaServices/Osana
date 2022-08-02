@@ -48,6 +48,12 @@ export default function rewriteNode (node: any, origin?: string): any {
           if (node.attrs[i].name === "href") {
             node.attrs.push({ name: "data-href", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "integrity") {
+            node.attrs.push({ name: "data-integrity", value: node.attrs[i].value });
+            node.attrs[i].value = "";
+          } else if (node.attrs[i].name === "nonce") {
+            node.attrs.push({ name: "data-nonce", value: node.attrs[i].value });
+            node.attrs[i].value = "";
           }
         }
         break;

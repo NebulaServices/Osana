@@ -27,6 +27,7 @@ export class LocationProxy {
         return fakeLocation[prop];
       },
       set (target: any, prop: string, value: any): any {
+        console.log(prop);
         let fakeLocation: any = getLocation(scope);
         fakeLocation[prop] = value;
         location.pathname = config.prefix + config.codec.encode(fakeLocation.href);

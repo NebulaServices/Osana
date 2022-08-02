@@ -8,16 +8,10 @@ import rewriteHTML from "./rewrite/html";
 import rewriteJS from "./rewrite/js";
 import rewriteURL from "./rewrite/url";
 
-declare global {
-  interface Window {
-    __config: any;
-  }
-}
-
 const bareClient = new BareClient(config.bare);
 
 export default async function handleRequest (event: FetchEvent): Promise<Response> {
-  const url = config.codec.decode(new URL(event.request.url).pathname.replace(config.prefix, ""));
+  const url = config.codec.decode(new URL(event.request.url).pathname.replace(config.prefix, "")) + new URL(event.request.url).search;
   if (!/^https?:\/\//.test(url)) {
     return fetch(event.request.url);
   }
@@ -34,8 +28,8 @@ export default async function handleRequest (event: FetchEvent): Promise<Respons
   if (/text\/html/.test(responseHeaders["Content-Type"] as string)) {
     responseData = `
       <head>
-        <script src="/config.js"></script>
-        <script src="/client.js"></script>
+        <script src="${config.files.config}"></script>
+        <script src="${config.files.client}"></script>
         <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">
         <link rel="icon" href="${requestURL.origin}/favicon.ico">
         ${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${rewriteURL(responseHeaders["location"] as string)}">` : ""}

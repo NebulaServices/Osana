@@ -1,15 +1,19 @@
-import * as codec from "./lib/util/codecs";
+import * as codecs from "./lib/util/codecs";
 
 declare global {
   interface Window {
-    __config: any;
+    __osana$config: any;
   }
 }
 
-self.__config = {
-  bare: "http://localhost:8080/",
-  prefix: "/~/",
-  codec: codec.none
+self.__osana$config = {
+  bare: `http://localhost:8080/`,
+  prefix: "/~osana/",
+  codec: codecs.none,
+  files: {
+    config: "/~osana/config.js",
+    client: "/~osana/client.js"
+  }
 }
 
-export default self.__config;
+export default self.__osana$config;

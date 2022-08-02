@@ -3,7 +3,7 @@ search.addEventListener("keypress", (event) => {
   if (event.key === "Enter") {
     if ("serviceWorker" in navigator) {
       navigator.serviceWorker.register("/sw.js", {
-        scope: __config.prefix
+        scope: __osana$config.prefix
       }).then(() => {
         let location;
         if (/^https?:\/\/([^\s]+\.)+[^\s]+$/.test(search.value.trim())) location = search.value;
@@ -11,7 +11,7 @@ search.addEventListener("keypress", (event) => {
           if (/^([^\s]+\.)+[^\s]+$/.test(search.value.trim())) location = "https://" + search.value;
           else location = "https://search.brave.com/search?q=" + encodeURIComponent(search.value);
         }
-        window.location.href = `${__config.prefix}${__config.codec.encode(location)}`;
+        window.location.href = `${__osana$config.prefix}${__osana$config.codec.encode(location)}`;
       }).catch((e) => {
         alert(e.message);
         console.error(e);

@@ -1,37 +1,8 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html, 
 body {
-  margin: 0;
-  padding: 0;
-  background: #1764FF;
-  font-family: sans-serif;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #fafafa;
-}
-
-.center {
-  text-align: center;
-  position: relative;
-  left: 50%;
-  top: 50%;
-  transform: translate(-50%, -50%);
-}
-
-input {
-  background: #1764FF;
-  width: 300px;
-  padding: 10px;
-  border: 1px solid #fafafa;
-  border-radius: 4px;
-  box-sizing: border-box;
-  font-size: 16px;
-  line-height: 1.5;
-  color: #fafafa;
-}
-
-input::placeholder{
-	color: #fafafa;
-}
-
-input:focus {
-  outline: none;
+  height: 100%;
 }

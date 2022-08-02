@@ -4,8 +4,16 @@ export class WindowProxy {
   constructor (scope: Window) {
     return new Proxy(scope, {
       get (target: any, prop: string, receiver: any): any {
-        if (target[prop] && target[prop].toString && typeof target[prop] === "function" && /{ \[native code\] }/.test(target[prop].toString()) && prop !== "Symbol") {
-          // return a function that can also be called with the new operator
+        let exclusions = [
+          "Symbol",
+          "Number",
+          "setTimeout",
+          "setInterval",
+          "parseFloat",
+          "parseInt",
+          "fetch"
+        ];
+        if (target[prop] && target[prop].toString && typeof target[prop] === "function" && /{ \[native code\] }/.test(target[prop].toString()) && !exclusions.includes(prop)) {
           if (isFunction(target[prop]) === "class") {
             return class extends target[prop] {
               constructor (...args: any[]) {
@@ -14,7 +22,7 @@ export class WindowProxy {
             }
           } else {
             return function () {
-              return target[prop].apply(window, arguments);
+              return (scope[prop as any] as any).apply(window, arguments);
             }
           }
         } else if (prop === "location") {
@@ -30,6 +38,9 @@ export class WindowProxy {
           return window.__sessionStorage;
         }
         return target[prop];
+      },
+      set (target: any, prop: string, value: any): any {
+        return scope[prop as any] = value;
       }
     });
   }
