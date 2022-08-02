@@ -12,7 +12,8 @@ self.__osana$config = {
   codec: codecs.none,
   files: {
     config: "/config.js",
-    client: "/client.js"
+    client: "/client.js",
+    sw: "/sw.js"
   }
 }
 

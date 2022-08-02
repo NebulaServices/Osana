@@ -9,8 +9,8 @@
 <h1 align="center">Cloning and installing dependencies</h1>
 
 ```bash
-$ git clone https://github.com/NebulaServices/Osana-Node.git
-$ cd Osana-Node
+$ git clone https://github.com/NebulaServices/Osana.git
+$ cd Osana
 $ npm ci
 ```
 
@@ -19,35 +19,38 @@ $ npm ci
 `src/config.ts`
 
 ```ts
-import * as codec from "./lib/util/codecs";
+import * as codecs from "./lib/util/codecs";
 
 declare global {
   interface Window {
-    __config: any;
+    __osana$config: any;
   }
 }
 
-self.__config = {
-  bare: "http://localhost:8080/",
+self.__osana$config = {
+  bare: `${location.origin}/bare/`,
   prefix: "/~/",
-  codec: codec.none
+  codec: codecs.none,
+  files: {
+    config: "/config.js",
+    client: "/client.js",
+    sw: "/sw.js"
+  }
 }
 
-export default self.__config;
+export default self.__osana$config;
 ```
 
-<h1 align="center">Running</h1>
+<h1 align="center">Building Scripts</h1>
 
-
-<h2>Production</h2>
+The scripts will appear in the /dist directory.
 
 ```bash
-$ npm run build
-$ npm run start
+npm run build
 ```
 
-<h2>Development</h2>
+<h1 align="center">Demo</h1>
 
 ```bash
-$ npm run dev
+npm run start
 ```
