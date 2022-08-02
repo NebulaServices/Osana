@@ -11,8 +11,8 @@ self.__osana$config = {
   prefix: "/~osana/",
   codec: codecs.none,
   files: {
-    config: "/~osana/config.js",
-    client: "/~osana/client.js"
+    config: "/config.js",
+    client: "/client.js"
   }
 }
 
