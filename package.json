@@ -1,6 +1,6 @@
 {
   "name": "osana",
-  "version": "0.0.9",
+  "version": "0.0.10",
   "description": "An interception based web proxy.",
   "main": "index.js",
   "scripts": {

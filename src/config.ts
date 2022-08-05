@@ -13,7 +13,8 @@ declare global {
         config: string,
         client: string,
         sw: string
-      }
+      },
+      blacklist?: RegExp[],
     }
   }
 }
@@ -26,7 +27,11 @@ self.__osana$config = {
     config: "/config.js",
     client: "/client.js",
     sw: "/sw.js"
-  }
+  },
+  blacklist: [
+    /^(www\.)?netflix\.com/,
+    /^accounts\.google\.com/,
+  ]
 }
 
 export default self.__osana$config;

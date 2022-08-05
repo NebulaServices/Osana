@@ -18,6 +18,10 @@ export default async function handleRequest (event: FetchEvent): Promise<Respons
   const requestURL = new URL(url);
   const requestHeaders = Object.fromEntries(event.request.headers.entries());
 
+  if (config.blacklist && config.blacklist.some(re => re.test(requestURL.host))) {
+    return new BlackListedResponse();
+  }
+
   const response = await bareClient.fetch(requestURL, {
     headers: requestHeaders
   });
@@ -49,4 +53,16 @@ export default async function handleRequest (event: FetchEvent): Promise<Respons
     statusText: response.rawResponse.statusText,
     headers: responseHeaders as HeadersInit
   });
+}
+
+class BlackListedResponse extends Response {
+  constructor () {
+    super("Forbidden", {
+      status: 403,
+      statusText: "Forbidden",
+      headers: {
+        "Content-Type": "text/plain"
+      }
+    });
+  }
 }
