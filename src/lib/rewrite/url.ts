@@ -1,6 +1,7 @@
 import config from "../../config";
 
 function combine (url: URL, path: string) {
+  if (!url.pathname) return path;
   url.pathname = url.pathname.replace(/[^/]+?\.[^/]+?$/, "");
   if (/^\//.test(path)) {
     return url.origin + path;

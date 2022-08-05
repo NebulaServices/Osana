@@ -2,7 +2,19 @@ import * as codecs from "./lib/util/codecs";
 
 declare global {
   interface Window {
-    __osana$config: any;
+    __osana$config: {
+      bare: string,
+      prefix: string,
+      codec: {
+        encode: (str: string) => string,
+        decode: (str: string) => string
+      },
+      files: {
+        config: string,
+        client: string,
+        sw: string
+      }
+    }
   }
 }
 

@@ -1,18 +1,43 @@
-import { btoa, atob } from "./base64";
-
 export const none = {
-  encode: (url: string): string => url,
-  decode: (url: string): string => url
+  encode: (url: string = ""): string => url,
+  decode: (url: string = ""): string => url
 }
 
 export const plain = {
-  encode: (url: string): string => encodeURIComponent(url),
-  decode: (url: string): string => decodeURIComponent(url)
+  encode: (url: string = ""): string => encodeURIComponent(url),
+  decode: (url: string = ""): string => decodeURIComponent(url)
+}
+
+export const xor = {
+  encode: (url: string = ""): string => {
+    return encodeURIComponent(url.toString().split("").map((char, ind) => ind % 2 ? String.fromCharCode(char.charCodeAt(0) ^ 2) : char).join(""));
+  },
+  decode: (url: string = ""): string => {
+    let [ input, ...search ] = url.split("?");
+    return decodeURIComponent(input).split("").map((char, ind) => ind % 2 ? String.fromCharCode(char.charCodeAt(0) ^ 2) : char).join("") + (search.length ? "?" + search.join("?") : "");
+  },
 }
 
 export const base64 = {
-  encode: (url: string): string => btoa(url),
-  decode: (url: string): string => atob(url)
+  encode: (url: string): string => {
+    const TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    url = String(url);
+    if (/[^\0-\xFF]/.test(url)) new DOMException("The string to be encoded contains characters outside of the Latin1 range.");
+    let padding = url.length % 3,output = "",position = -1,a,b,c,buffer,length = url.length - padding;
+    while (++position < length) {a = url.charCodeAt(position) << 16;b = url.charCodeAt(++position) << 8;c = url.charCodeAt(++position);buffer = a + b + c;output += (TABLE.charAt(buffer >> 18 & 0x3F) + TABLE.charAt(buffer >> 12 & 0x3F) + TABLE.charAt(buffer >> 6 & 0x3F) + TABLE.charAt(buffer & 0x3F))}
+    if (padding == 2) {a = url.charCodeAt(position) << 8;b = url.charCodeAt(++position);buffer = a + b;output += (TABLE.charAt(buffer >> 10) + TABLE.charAt((buffer >> 4) & 0x3F) + TABLE.charAt((buffer << 2) & 0x3F) + "=");} else if (padding == 1) {buffer = url.charCodeAt(position);output += (TABLE.charAt(buffer >> 2) + TABLE.charAt((buffer << 4) & 0x3F) + "==")}
+    return output;
+  },
+  decode: (url: string): string => {
+    const TABLE = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+    url = String(url).replace(/[\t\n\f\r ]/g, "");
+    var length = url.length;
+    if (length % 4 == 0) {url = url.replace(/==?$/, "");length = url.length};
+    if (length % 4 == 1 || /[^+a-zA-Z0-9/]/.test(url)) throw new DOMException("Failed to execute 'atob' on 'Window': The string to be decoded is not correctly encoded.");
+    let bitCounter = 0,bitStorage,buffer,output = "",position = -1;
+    while (++position < length) {buffer = TABLE.indexOf(url.charAt(position));bitStorage = bitCounter % 4 ? (bitStorage as number) * 64 + buffer : buffer;if (bitCounter++ % 4) output += String.fromCharCode(0xFF & bitStorage >> (-2 * bitCounter & 6))}
+    return output;
+  }
 }
 
 export const whatTheFuck = {

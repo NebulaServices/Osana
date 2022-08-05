@@ -37,7 +37,7 @@ export default async function handleRequest (event: FetchEvent): Promise<Respons
     `;
     responseData += rewriteHTML(await response.text(), (requestURL.origin + requestURL.pathname));
   } else if (/text\/css/.test(responseHeaders["Content-Type"] as string) || event.request.destination === "style") {
-    responseData = rewriteCSS(await response.text());
+    responseData = rewriteCSS(await response.text(), (requestURL.origin + requestURL.pathname));
   } else if (/application\/javascript/.test(responseHeaders["Content-Type"] as string) || event.request.destination === "script") {
     responseData = rewriteJS(await response.text());
   } else {
