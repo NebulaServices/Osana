@@ -17,28 +17,32 @@ export default async function handleRequest (event: FetchEvent): Promise<Respons
   }
   const requestURL = new URL(url);
   const requestHeaders = Object.fromEntries(event.request.headers.entries());
+  requestHeaders["host"] = requestURL.hostname;
 
-  if (config.blacklist && config.blacklist.some(re => re.test(requestURL.host))) {
+  if (config.blacklist && config.blacklist.some(regex => regex.test(requestURL.host))) {
     return new BlackListedResponse();
   }
 
-  const response = await bareClient.fetch(requestURL, {
+  const bareRequestData: { [key: string]: any } = {
+    method: event.request.method,
     headers: requestHeaders
-  });
+  }
+  if (!["GET", "HEAD"].includes(event.request.method)) bareRequestData.body = await event.request.blob();
+
+  const response = await bareClient.fetch(requestURL, bareRequestData);
   let responseStatus = response.rawResponse.status;
   const responseHeaders = rewriteHeaders(response.rawHeaders as any, requestURL);
 
   let responseData: any = "";
   if (/text\/html/.test(responseHeaders["Content-Type"] as string)) {
-    responseData = `
-      <head>
-        <script src="${config.files.config}"></script>
-        <script src="${config.files.client}"></script>
-        <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">
-        <link rel="icon" href="${requestURL.origin}/favicon.ico">
-        ${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${rewriteURL(responseHeaders["location"] as string)}">` : ""}
-      </head>
-    `;
+    responseData = 
+      `<head>` +
+        `<script src="${config.files.config}"></script>` +
+        `<script src="${config.files.client}"></script>` +
+        `<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">` +
+        `<link rel="icon" href="${requestURL.origin}/favicon.ico">` +
+        `${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${rewriteURL(responseHeaders["location"] as string)}">` : ""}` +
+      `</head>`;
     responseData += rewriteHTML(await response.text(), (requestURL.origin + requestURL.pathname));
   } else if (/text\/css/.test(responseHeaders["Content-Type"] as string) || event.request.destination === "style") {
     responseData = rewriteCSS(await response.text(), (requestURL.origin + requestURL.pathname));

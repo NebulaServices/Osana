@@ -15,7 +15,7 @@ export const xor = {
   decode: (url: string = ""): string => {
     let [ input, ...search ] = url.split("?");
     return decodeURIComponent(input).split("").map((char, ind) => ind % 2 ? String.fromCharCode(char.charCodeAt(0) ^ 2) : char).join("") + (search.length ? "?" + search.join("?") : "");
-  },
+  }
 }
 
 export const base64 = {

@@ -20,7 +20,7 @@ declare global {
 }
 
 self.__osana$config = {
-  bare: `https://tutorialread.beauty/bare/`,
+  bare: `${location.origin}/bare/`,
   prefix: "/~osana/",
   codec: codecs.none,
   files: {

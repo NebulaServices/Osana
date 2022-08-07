@@ -11,14 +11,14 @@ module.exports = {
   module: {
     rules: [
       {
-        test: /\.tsx?$/,
+        test: /\.[jt]sx?$/,
         use: "ts-loader",
         exclude: /node_modules/,
       },
     ],
   },
   resolve: {
-    extensions: [".tsx", ".ts", ".js"],
+    extensions: [".js", ".ts", ".jsx", ".tsx"],
   },
   output: {
     path: path.resolve(__dirname, "dist"),
@@ -28,7 +28,18 @@ module.exports = {
     static: {
       directory: path.join(__dirname, "static"),
     },
-    compress: false,
+    compress: true,
     port: 3000,
+    proxy: {
+      "/bare/v1": {
+        target: "ws://localhost:8080",
+        pathRewrite: { "^/bare": "" },
+        ws: true
+      },
+      "/bare": {
+        target: "http://localhost:8080",
+        pathRewrite: { "^/bare": "" }
+      }
+    }
   }
 };

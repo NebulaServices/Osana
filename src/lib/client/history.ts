@@ -9,7 +9,6 @@ const pushState = new Proxy(window.history.pushState, {
 
 const replaceState = new Proxy(window.history.replaceState, {
   apply (target: any, thisArg: any, args: string[]) {
-    console.log(new Error().stack);
     args[2] = rewriteURL(args[2]);
     Reflect.apply(target, thisArg, args);
   }
