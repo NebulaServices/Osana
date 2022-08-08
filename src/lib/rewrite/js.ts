@@ -1,5 +1,5 @@
-import * as acorn from "acorn";
-import escodegen from "escodegen";
+import { parse } from "acorn";
+import { generate } from "escodegen";
 
 export default function rewriteJS (js: string): string {
   let AST: acorn.Node = getAST(js);
@@ -14,7 +14,7 @@ export default function rewriteJS (js: string): string {
       }
     }
     // if (node.type === "Identifier") {
-    //   if (node.name !== "window") {
+    //   if (node.name === "location") {
     //     if (parent.type !== "MemberExpression") {
     //       node = rewriteNode(node);
     //     }
@@ -22,7 +22,7 @@ export default function rewriteJS (js: string): string {
     // }
     return node;
   });
-  return escodegen.generate(AST);
+  return generate(AST);
 }
 
 function rewriteNode (node: any): any {
@@ -68,11 +68,11 @@ function walkAST (AST: any, parent: any, handler: (node: any, parent: any) => an
 
 function getAST (js: string): acorn.Node {
   try {
-    return acorn.parse(js, {
+    return parse(js, {
 //ecmaVersion: 2020
     } as any);
   } catch {
-    return acorn.parse(js, {
+    return parse(js, {
       //ecmaVersion: 2020,
       sourceType: "module"
     } as any);

@@ -41,7 +41,7 @@ indexedDB.open = (name: string, version?: number): IDBOpenDBRequest => {
 
 declare let openDatabase: any;
 
-if (openDatabase) {
+if (window.hasOwnProperty("openDatabase")) {
   const odb = openDatabase;
   openDatabase = (name: string, version: string, displayName: string, maxSize: number): any => {
     return odb(`${name}@${LocationProxy.host}`, version, displayName, maxSize);

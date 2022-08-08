@@ -4,9 +4,10 @@ module.exports = {
   mode: "development",
   devtool: "source-map",
   entry: {
-    config: "./src/config.ts",
-    sw: "./src/sw.ts",
-    client: "./src/lib/client/index.ts",
+    "osana.config.js": "./src/config.ts",
+    "osana.worker.js": "./src/lib/util/worker.ts",
+    "osana.client.js": "./src/lib/client/index.ts",
+    "osana.bundle.js": "./src/bundle.ts"
   },
   module: {
     rules: [
@@ -22,7 +23,7 @@ module.exports = {
   },
   output: {
     path: path.resolve(__dirname, "dist"),
-    filename: "[name].js",
+    filename: "[name]",
   },
   devServer: {
     static: {

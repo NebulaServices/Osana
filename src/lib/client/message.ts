@@ -11,14 +11,14 @@ export default class MessageProxy {
             args[1] = new Proxy(args[1], {
               apply (target: any, thisArg: any, args: any[]): any {
                 args[0] = new Proxy(args[0], {
-                  get (target: any, property: any, receiver: any): any {
-                    if (property === "origin") return __location.origin;
-                    if (property === "path") target[property].map((win: Window) => new WindowProxy(win));
-                    if (property === "currentTarget") return new WindowProxy(target[property]);
-                    if (property === "source") return new WindowProxy(target[property]);
-                    if (property === "srcElement") return new WindowProxy(target[property]);
-                    if (property === "target") return new WindowProxy(target[property]);
-                    return target[property];
+                  get (target: any, prop: any, receiver: any): any {
+                    if (prop === "origin") return __location.origin;
+                    if (prop === "path") target[prop].map((win: Window) => new WindowProxy(win));
+                    if (prop === "currentTarget") return new WindowProxy(target[prop]);
+                    if (prop === "source") return new WindowProxy(target[prop]);
+                    if (prop === "srcElement") return new WindowProxy(target[prop]);
+                    if (prop === "target") return new WindowProxy(target[prop]);
+                    return target[prop];
                   }
                 });
                 return Reflect.apply(target, thisArg, args);

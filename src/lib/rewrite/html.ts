@@ -136,7 +136,7 @@ function rewriteNode (node: any, origin?: string): any {
   return node;
 }
 
-function rewriteSrcset (value: string, origin?: string): string {
+export function rewriteSrcset (value: string, origin?: string): string {
   const urls = value.split(/ [0-9]+x,? ?/g);
   if (!urls) return "";
   const sufixes = value.match(/ [0-9]+x,? ?/g);

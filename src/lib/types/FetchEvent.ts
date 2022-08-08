@@ -1,4 +1,4 @@
 export default interface FetchEvent extends Event {
-	request: any;
+	request: Request;
 	respondWith(response: Promise<Response>|Response): Promise<Response>;
 }

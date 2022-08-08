@@ -1,4 +1,4 @@
-import rewriteURL from "../rewrite/url";
+const rewriteURL = self.__osana$bundle.rewrite.url;
 
 export default new Proxy(fetch, {
   apply (target, thisArg, args) {
