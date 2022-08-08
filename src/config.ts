@@ -26,7 +26,6 @@ self.__osana$config = {
     config: "/osana.config.js",
     client: "/osana.client.js",
     bundle: "/osana.bundle.js",
-//    sw: "/sw.js"
   },
   blacklist: [
     /^(www\.)?netflix\.com/,

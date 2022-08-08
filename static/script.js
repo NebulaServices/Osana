@@ -2,7 +2,7 @@ const search = document.getElementById("search");
 search.addEventListener("keypress", (event) => {
   if (event.key === "Enter") {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register(`/sw.js?${Math.floor(Math.random()*1e5)+1e5}`, {
+      navigator.serviceWorker.register(`/sw.js`, {
         scope: __osana$config.prefix
       }).then(() => {
         let location;

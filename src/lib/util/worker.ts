@@ -45,9 +45,9 @@ self.OsanaServiceWorker = class OsanaServiceWorker {
     if (/text\/html/.test(responseHeaders["Content-Type"] as string)) {
       responseData = 
         `<head>` +
-          `<script src="${this.config.files.bundle}?${Math.floor(Math.random()*1e5)+1e5}"></script>` +
-          `<script src="${this.config.files.config}?${Math.floor(Math.random()*1e5)+1e5}"></script>` +
-          `<script src="${this.config.files.client}?${Math.floor(Math.random()*1e5)+1e5}"></script>` +
+          `<script src="${this.config.files.bundle}"></script>` +
+          `<script src="${this.config.files.config}"></script>` +
+          `<script src="${this.config.files.client}"></script>` +
           `<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">` +
           `<link rel="icon" href="${requestURL.origin}/favicon.ico">` +
           `${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${this.bundle.rewrite.url(responseHeaders["location"] as string)}">` : ""}` +
