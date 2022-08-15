@@ -8,6 +8,7 @@ import { encodeProtocol } from "@tomphttp/bare-server-node/dist/encodeProtocol";
 import * as codecs from "./lib/util/codecs";
 import { v4 } from "uuid";
 
+
 declare global {
   interface Window {
     __osana$bundle: {

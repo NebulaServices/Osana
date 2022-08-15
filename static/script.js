@@ -2,7 +2,8 @@ const search = document.getElementById("search");
 search.addEventListener("keypress", (event) => {
   if (event.key === "Enter") {
     if ("serviceWorker" in navigator) {
-      navigator.serviceWorker.register(`/sw.js`, {
+      // TODO: Remove nocahce for production
+      navigator.serviceWorker.register(`/sw.js?1`, {
         scope: __osana$config.prefix
       }).then(() => {
         let location;

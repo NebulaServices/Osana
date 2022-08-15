@@ -1,8 +1,8 @@
-import { parse } from "acorn";
+import { parseScript } from "meriyah";
 import { generate } from "escodegen";
 
 export default function rewriteJS (js: string): string {
-  let AST: acorn.Node = getAST(js);
+  let AST: any = getAST(js);
   AST = walkAST(AST, null, (node: any, parent: any) => {
     if (node.type === "MemberExpression") {
       if (parent.type !== "CallExpression") {
@@ -14,7 +14,7 @@ export default function rewriteJS (js: string): string {
       }
     }
     // if (node.type === "Identifier") {
-    //   if (node.name === "location") {
+    //   if (node.name !== "window") {
     //     if (parent.type !== "MemberExpression") {
     //       node = rewriteNode(node);
     //     }
@@ -51,7 +51,7 @@ function rewriteNode (node: any): any {
   return node;
 }
 
-function walkAST (AST: any, parent: any, handler: (node: any, parent: any) => any): acorn.Node {
+function walkAST (AST: any, parent: any, handler: (node: any, parent: any) => any): any {
   if (!AST || typeof AST !== "object") return AST;
   AST = handler(AST, parent);
   for (let node in AST) {
@@ -66,15 +66,13 @@ function walkAST (AST: any, parent: any, handler: (node: any, parent: any) => an
   return AST;
 }
 
-function getAST (js: string): acorn.Node {
+function getAST (js: string): any {
   try {
-    return parse(js, {
-//ecmaVersion: 2020
-    } as any);
-  } catch {
-    return parse(js, {
-      //ecmaVersion: 2020,
-      sourceType: "module"
-    } as any);
+    return parseScript(js, {
+      module: true,
+    });
+  } catch (error) {
+    console.log(error);
+    return parseScript("");
   }
 }

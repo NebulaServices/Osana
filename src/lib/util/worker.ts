@@ -1,6 +1,6 @@
 import FetchEvent from "../types/FetchEvent";
-importScripts("./osana.bundle.js");
-importScripts("./osana.config.js");
+importScripts(`./osana.bundle.js?1`);
+importScripts(`./osana.config.js?1`);
 
 declare global {
   interface Window {
@@ -45,9 +45,9 @@ self.OsanaServiceWorker = class OsanaServiceWorker {
     if (/text\/html/.test(responseHeaders["Content-Type"] as string)) {
       responseData = 
         `<head>` +
-          `<script src="${this.config.files.bundle}"></script>` +
-          `<script src="${this.config.files.config}"></script>` +
-          `<script src="${this.config.files.client}"></script>` +
+          `<script src="${this.config.files.bundle}?1"></script>` +
+          `<script src="${this.config.files.config}?1"></script>` +
+          `<script src="${this.config.files.client}?1"></script>` +
           `<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">` +
           `<link rel="icon" href="${requestURL.origin}/favicon.ico">` +
           `${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${this.bundle.rewrite.url(responseHeaders["location"] as string)}">` : ""}` +
