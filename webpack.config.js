@@ -25,6 +25,11 @@ module.exports = {
     path: path.resolve(__dirname, "dist"),
     filename: "osana.[name].js",
   },
+  optimization: {
+    minimize: true,
+    mangleExports: 'size',
+    // concatenateModules: true,
+  },
   devServer: {
     static: {
       directory: path.join(__dirname, "static"),
@@ -41,6 +46,6 @@ module.exports = {
         target: "http://localhost:8080",
         pathRewrite: { "^/bare": "" }
       }
-    }
-  }
+    },
+  },
 };

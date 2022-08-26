@@ -1,5 +1,6 @@
-import { parseScript } from "meriyah";
-import { generate } from "escodegen";
+import { parseScript } from "seafox";
+import { generate } from "esotope-hammerhead";
+// import rewriteURL from "./url"; <-- for ImportDeclaration and ImportExpression rewriting, just wanted to push seafox and esotope-hammerhead changes
 
 export default function rewriteJS (js: string): string {
   let AST: any = getAST(js);
@@ -22,7 +23,13 @@ export default function rewriteJS (js: string): string {
     // }
     return node;
   });
-  return generate(AST);
+
+  return generate(AST, {
+    format: {
+      quotes: 'double',
+      compact: true
+    }
+  });
 }
 
 function rewriteNode (node: any): any {
@@ -45,6 +52,9 @@ function rewriteNode (node: any): any {
         break;
       case "sessionStorage":
         node.name = "__sessionStorage";
+        break;
+      case "top":
+        node.name = "__top";
         break;
     }
   }
@@ -69,10 +79,10 @@ function walkAST (AST: any, parent: any, handler: (node: any, parent: any) => an
 function getAST (js: string): any {
   try {
     return parseScript(js, {
-      module: true,
+      module: true
     });
   } catch (error) {
-    console.log(error);
+    console.log(error)
     return parseScript("");
   }
 }
