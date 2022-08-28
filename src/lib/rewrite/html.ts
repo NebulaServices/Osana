@@ -20,10 +20,12 @@ function rewriteNode (node: any, origin?: string): any {
         break;
 
       case "script":
+        let src: boolean = false;
         for (let i in node.attrs) {
           if (node.attrs[i].name === "src") {
             node.attrs.push({ name: "data-src", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+            src = true;
           } else if (node.attrs[i].name === "integrity") {
             node.attrs.push({ name: "data-integrity", value: node.attrs[i].value });
             node.attrs[i].value = "";
@@ -32,9 +34,13 @@ function rewriteNode (node: any, origin?: string): any {
             node.attrs[i].value = "";
           }
         }
-        // for (let i in node.childNodes) {
-        //   node.childNodes[i].value = rewriteJS(node.childNodes[i].value);
-        // }
+
+        if (!src) {
+          for (let i in node.childNodes) {
+            node.childNodes[i].value = rewriteJS(node.childNodes[i].value);
+          }
+        }
+
         break;
       
       case "style":

@@ -1,3 +1,5 @@
+import rewriteJS from './js';
+
 function combine (url: URL, path: string) {
   if (!url.pathname) return path;
   url.pathname = url.pathname.replace(/[^/]+?\.[^/]+?$/, "");
@@ -15,7 +17,7 @@ function combine (url: URL, path: string) {
 export default function rewriteURL (url: string, origin?: string): string {
   const config = self.__osana$config;
   if (new RegExp(`^${config.prefix}`).test(url)) return url;
-  let fakeLocation = {} as any;
+  let fakeLocation;
   if ("window" in self) {
     fakeLocation = new URL(config.codec.decode(location.pathname.replace(new RegExp(`^${config.prefix}`), "")));
   }
@@ -23,15 +25,17 @@ export default function rewriteURL (url: string, origin?: string): string {
     fakeLocation = new URL(origin);
   }
 
-  if (/^(data|mailto):/.test(url)) {
+  if (/^(#|about|data|mailto):/.test(url)) {
     return url;
-  } else if (/^https?:\/\//.test(url)) {
-    return `${config.prefix}${config.codec.encode(url)}`;
-  } else if (/^\/\//.test(url)) {
-    return `${config.prefix}${config.codec.encode((fakeLocation.protocol ? fakeLocation.protocol : "https:") + url)}`;
+  } else if (/^javascript:/.test(url)) {
+    return `javascript:${rewriteJS(url.slice('javascript:'.length))}`;
   } else {
     if (!fakeLocation) return url;
-    return `${config.prefix}${config.codec.encode(combine(fakeLocation, url))}`;
+    try {
+      return `${config.prefix}${config.codec.encode(new URL(url, fakeLocation.href).href)}`;
+    } catch {
+      return `${config.prefix}${config.codec.encode(url)}`
+    }
   }
 }
 

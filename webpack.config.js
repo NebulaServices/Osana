@@ -26,9 +26,7 @@ module.exports = {
     filename: "osana.[name].js",
   },
   optimization: {
-    minimize: true,
-    mangleExports: 'size',
-    // concatenateModules: true,
+    minimize: false,
   },
   devServer: {
     static: {

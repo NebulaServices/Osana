@@ -7,7 +7,7 @@ export function request (headers: Headers, requestURL: URL): Headers {
 }
 
 export function response (headers: Headers, requestURL: URL): Headers {
-  ["cache-control", "Content-Security-Policy", "Content-Security-Policy-Report-Only", "content-encoding", "content-length", "cross-origin-opener-policy", "cross-origin-opener-policy-report-only", "report-to", "strict-transport-security", "x-content-type-options", "x-frame-options"].forEach((header: string): void => {
+  ["Cache-Control", "Content-Security-Policy", "Content-Security-Policy-Report-Only", /* "Content-Encoding", "Content-Length", */ "Cross-Origin-Opener-Policy", "Cross-Origin-Opener-Policy-Report-Only", "Report-To", "Strict-Transport-Security", "X-Content-Type-Options", "X-Frame-Options", "Access-Control-Allow-Origin"].forEach((header: string): void => {
     delete headers[header];
     delete headers[header.toLowerCase()];
   });

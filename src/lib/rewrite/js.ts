@@ -1,6 +1,6 @@
 import { parseScript } from "seafox";
 import { generate } from "esotope-hammerhead";
-// import rewriteURL from "./url"; <-- for ImportDeclaration and ImportExpression rewriting, just wanted to push seafox and esotope-hammerhead changes
+// import rewriteURL from "./url"; <-- for ImportDeclaration and ImportExpression rewriting
 
 export default function rewriteJS (js: string): string {
   let AST: any = getAST(js);
@@ -26,8 +26,7 @@ export default function rewriteJS (js: string): string {
 
   return generate(AST, {
     format: {
-      quotes: 'double',
-      compact: true
+      quotes: 'double'
     }
   });
 }
