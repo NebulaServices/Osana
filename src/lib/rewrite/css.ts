@@ -10,7 +10,5 @@ export default function rewriteCSS (css: string, origin?: string): string {
   // });
   // return generate(ast);
 
-  css = css.replace(/(?<=url\("?'?)[^"'][\S]*[^"'](?="?'?\);?)/g, `${rewriteURL(`$&`)}`);
-  css = css.replace(/(?<=--[\w\d-]*: "?'?)[^"' ].*[^"';](?="?'?;)/g, `${rewriteURL(`$&`)}`);
-  return css;
+  return css = css.replace(/(?<=url\("?'?)[^"'][\S]*[^"'](?="?'?\);?)/g, rewriteURL('$&', origin));
 }

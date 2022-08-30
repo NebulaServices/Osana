@@ -1,6 +1,5 @@
-import { parseScript } from "seafox";
+import { parseScript } from "meriyah";
 import { generate } from "esotope-hammerhead";
-// import rewriteURL from "./url"; <-- for ImportDeclaration and ImportExpression rewriting
 
 export default function rewriteJS (js: string): string {
   let AST: any = getAST(js);
