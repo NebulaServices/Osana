@@ -1,7 +1,8 @@
 import { parseScript } from "meriyah";
 import { generate } from "esotope-hammerhead";
+// import rewriteURL from './url';
 
-export default function rewriteJS (js: string): string {
+export default function rewriteJS (js: string, origin?: string): string {
   let AST: any = getAST(js);
   AST = walkAST(AST, null, (node: any, parent: any) => {
     if (node.type === "MemberExpression") {

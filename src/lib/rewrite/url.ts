@@ -28,7 +28,7 @@ export default function rewriteURL (url: string, origin?: string): string {
   if (/^(#|about|data|mailto):/.test(url)) {
     return url;
   } else if (/^javascript:/.test(url)) {
-    return `javascript:${rewriteJS(url.slice('javascript:'.length))}`;
+    return `javascript:${rewriteJS(url.slice('javascript:'.length), origin)}`;
   } else {
     if (!fakeLocation) return url;
     try {

@@ -15,6 +15,9 @@ function rewriteNode (node: any, origin?: string): any {
           if (node.attrs[i].name === "href") {
             node.attrs.push({ name: "data-href", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "style") {
+            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -37,10 +40,9 @@ function rewriteNode (node: any, origin?: string): any {
 
         if (!src) {
           for (let i in node.childNodes) {
-            node.childNodes[i].value = rewriteJS(node.childNodes[i].value);
+            node.childNodes[i].value = rewriteJS(node.childNodes[i].value, origin);
           }
         }
-
         break;
       
       case "style":
@@ -81,6 +83,9 @@ function rewriteNode (node: any, origin?: string): any {
           } else if (node.attrs[i].name === "srcset") {
             node.attrs.push({ name: "data-srcset", value: node.attrs[i].value });
             node.attrs[i].value = rewriteSrcset(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "style") {
+            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -93,6 +98,9 @@ function rewriteNode (node: any, origin?: string): any {
           } else if (node.attrs[i].name === "srcset") {
             node.attrs.push({ name: "data-srcset", value: node.attrs[i].value });
             node.attrs[i].value = rewriteSrcset(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "style") {
+            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -102,6 +110,9 @@ function rewriteNode (node: any, origin?: string): any {
           if (node.attrs[i].name === "action") {
             node.attrs.push({ name: "data-action", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "style") {
+            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -111,6 +122,9 @@ function rewriteNode (node: any, origin?: string): any {
           if (node.attrs[i].name === "src") {
             node.attrs.push({ name: "data-src", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "style") {
+            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -128,6 +142,122 @@ function rewriteNode (node: any, origin?: string): any {
                 node.attrs[i].value = "";
               }
             }
+          }
+        }
+        break;
+
+      case "area":
+        for (let i in node.attrs) {
+          if (node.attrs[i].name === "href") {
+            node.attrs.push({ name: "data-href", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } 
+        }
+        break;
+      
+      case "base":
+        for (let i in node.attrs) {
+          if (node.attrs[i].name === "href") {
+            node.attrs.push({ name: "data-href", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "style") {
+            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
+          }
+        }
+        break;
+
+      case "body":
+        for (let i in node.attrs) {
+          if (node.attrs[i].name === "background") {
+            node.attrs.push({ name: "data-background", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "style") {
+            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
+          }
+        }
+        break;
+
+      case "input":
+        for (let i in node.attrs) {
+          if (node.attrs[i].name === "src") {
+            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "style") {
+            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
+          }
+        }
+        break;
+
+      case "object":
+        for (let i in node.attrs) {
+          if (node.attrs[i].name === "data") {
+            node.attrs.push({ name: "data-data", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          }
+        }
+        break;
+
+      case "audio":
+        for (let i in node.attrs) {
+          if (node.attrs[i].name === "src") {
+            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          }
+        }
+        break;
+
+      case "button":
+        for (let i in node.attrs) {
+          if (node.attrs[i].name === "formaction") {
+            node.attrs.push({ name: "data-formaction", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "style") {
+            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
+          }
+        }
+        break;
+
+      case "embed":
+        for (let i in node.attrs) {
+          if (node.attrs[i].name === "src") {
+            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "style") {
+            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
+          }
+        }
+        break;
+
+      case "track":
+        for (let i in node.attrs) {
+          if (node.attrs[i].name === "src") {
+            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          }
+        }
+        break;
+
+      case "video":
+        for (let i in node.attrs) {
+          if (node.attrs[i].name === "src") {
+            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "poster") {
+            node.attrs.push({ name: "data-poster", value: node.attrs[i].value });
+          }
+        }
+        break;
+
+      default:
+        for (let i in node.attrs) {
+          if (node.attrs[i].name === "style") {
+            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
+            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
     }

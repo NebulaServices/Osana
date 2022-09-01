@@ -20,7 +20,7 @@ self.OsanaServiceWorker = class OsanaServiceWorker {
   }
 
   async fetch (event: FetchEvent): Promise<Response> {
-    const url = this.config.codec.decode(new URL(event.request.url).pathname.replace(this.config.prefix, "")) + new URL(event.request.url).search;
+    const url = this.config.codec.decode(event.request.url.slice((location.origin + this.config.prefix).length)) + new URL(event.request.url).search;
     if (!/^https?:\/\//.test(url)) {
       return fetch(event.request.url);
     }
@@ -45,18 +45,18 @@ self.OsanaServiceWorker = class OsanaServiceWorker {
     if (/text\/html/.test(responseHeaders["Content-Type"] as string)) {
       responseData = 
         `<head>` +
-          `<script src="${this.config.files.bundle}?1"></script>` +
-          `<script src="${this.config.files.config}?1"></script>` +
-          `<script src="${this.config.files.client}?1"></script>` +
+          `<script src="${this.config.files.bundle}"></script>` +
+          `<script src="${this.config.files.config}"></script>` +
+          `<script src="${this.config.files.client}"></script>` +
           `<link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">` +
           `<link rel="icon" href="${requestURL.origin}/favicon.ico">` +
           `${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${this.bundle.rewrite.url(responseHeaders["location"] as string)}">` : ""}` +
         `</head>`;
-      responseData += this.bundle.rewrite.html(await response.text(), (requestURL.origin + requestURL.pathname));
+      responseData += this.bundle.rewrite.html(await response.text(), url);
     } else if (/text\/css/.test(responseHeaders["Content-Type"] as string) || event.request.destination === "style") {
-      responseData = this.bundle.rewrite.css(await response.text(), (requestURL.origin + requestURL.pathname));
+      responseData = this.bundle.rewrite.css(await response.text(), url);
     } else if (/application\/javascript/.test(responseHeaders["Content-Type"] as string) || event.request.destination === "script") {
-      responseData = this.bundle.rewrite.js(await response.text());
+      responseData = this.bundle.rewrite.js(await response.text(), url);
     } else {
       responseData = await response.arrayBuffer();
     }
