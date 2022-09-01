@@ -7,8 +7,7 @@
     "start": "node server/index.mjs",
     "dev": "concurrently --raw --kill-others \"npm run bare\" \"webpack serve\"",
     "build": "webpack --mode production",
-    "bare": "npx bare-server-node --port 8080 --host localhost",
-    "bundle": "node bundle.mjs"
+    "bare": "npx bare-server-node --port 8080 --host localhost"
   },
   "keywords": [],
   "author": "Cohen Erickson <contact@cohenerickson.com>",
