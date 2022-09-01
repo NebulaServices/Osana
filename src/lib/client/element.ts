@@ -8,10 +8,14 @@ const attributes: {[index: string]: any} = {
   "href": [ HTMLAnchorElement, HTMLLinkElement, HTMLAreaElement, HTMLBaseElement ],
   "src": [ HTMLAudioElement, HTMLEmbedElement, HTMLIFrameElement, HTMLImageElement, HTMLInputElement, HTMLScriptElement, HTMLSourceElement, HTMLTrackElement, HTMLVideoElement ],
   "srcset": [ HTMLImageElement, HTMLSourceElement ],
-  "action": [ HTMLFormElement ] 
+  "action": [ HTMLFormElement ],
+  "poster": [ HTMLVideoElement ],
+  "formaction": [ HTMLButtonElement ],
+  "data": [ HTMLObjectElement ],
+  "background": [ HTMLBodyElement ]
 }
 
-// Element.seAttribute
+// Element.setAttribute
 const setterApply = (Object.getOwnPropertyDescriptor(Element.prototype, "setAttribute") as any).value;
 Element.prototype.setAttribute = function (name: string, value: string): void {
   if (attributes[name]) {
@@ -31,13 +35,20 @@ Object.keys(attributes).forEach((attribute) => {
   attributes[attribute].forEach((element: any) => {
     try {
       // URL based attributes
-      if (["href", "src", "srcset", "action"].includes(attribute)) {
+      if (["href", "src", "action", "poster", "formaction", "data", "background"].includes(attribute)) {
         const { set, get } = Object.getOwnPropertyDescriptor(element.prototype, attribute) as any;
         Object.defineProperty(element.prototype, attribute, {
           set (value) {
             return set.call(this, [ rewriteURL(value) ]);
           }
         });
+      } else if (["srcset"].includes(attribute)) {
+        const { set, get } = Object.getOwnPropertyDescriptor(element.prototype, attribute) as any;
+        Object.defineProperty(element.prototype, attribute, {
+          set (value) {
+            return set.call(this, [ rewriteSrcset(value) ])
+          }
+        })
       }
     } catch {}
   });

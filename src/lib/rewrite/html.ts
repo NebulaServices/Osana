@@ -9,15 +9,18 @@ export default function rewriteHTML (html: string, origin?: string): string {
 
 function rewriteNode (node: any, origin?: string): any {
   if (node.tagName) {
+    for (let i in node.attrs) {
+      if (node.attrs[i].name === "style") {
+        node.attrs.push({ name: "data-style", value: node.attrs[i].value });
+        node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
+      }
+    }
     switch (node.tagName.toLowerCase()) {
       case "a":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "href") {
             node.attrs.push({ name: "data-href", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
-          } else if (node.attrs[i].name === "style") {
-            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
-            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -83,9 +86,6 @@ function rewriteNode (node: any, origin?: string): any {
           } else if (node.attrs[i].name === "srcset") {
             node.attrs.push({ name: "data-srcset", value: node.attrs[i].value });
             node.attrs[i].value = rewriteSrcset(node.attrs[i].value, origin);
-          } else if (node.attrs[i].name === "style") {
-            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
-            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -98,9 +98,6 @@ function rewriteNode (node: any, origin?: string): any {
           } else if (node.attrs[i].name === "srcset") {
             node.attrs.push({ name: "data-srcset", value: node.attrs[i].value });
             node.attrs[i].value = rewriteSrcset(node.attrs[i].value, origin);
-          } else if (node.attrs[i].name === "style") {
-            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
-            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -110,9 +107,6 @@ function rewriteNode (node: any, origin?: string): any {
           if (node.attrs[i].name === "action") {
             node.attrs.push({ name: "data-action", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
-          } else if (node.attrs[i].name === "style") {
-            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
-            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -122,9 +116,6 @@ function rewriteNode (node: any, origin?: string): any {
           if (node.attrs[i].name === "src") {
             node.attrs.push({ name: "data-src", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
-          } else if (node.attrs[i].name === "style") {
-            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
-            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -160,9 +151,6 @@ function rewriteNode (node: any, origin?: string): any {
           if (node.attrs[i].name === "href") {
             node.attrs.push({ name: "data-href", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
-          } else if (node.attrs[i].name === "style") {
-            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
-            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -172,9 +160,6 @@ function rewriteNode (node: any, origin?: string): any {
           if (node.attrs[i].name === "background") {
             node.attrs.push({ name: "data-background", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
-          } else if (node.attrs[i].name === "style") {
-            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
-            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -184,9 +169,6 @@ function rewriteNode (node: any, origin?: string): any {
           if (node.attrs[i].name === "src") {
             node.attrs.push({ name: "data-src", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
-          } else if (node.attrs[i].name === "style") {
-            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
-            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -214,9 +196,6 @@ function rewriteNode (node: any, origin?: string): any {
           if (node.attrs[i].name === "formaction") {
             node.attrs.push({ name: "data-formaction", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
-          } else if (node.attrs[i].name === "style") {
-            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
-            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -226,9 +205,6 @@ function rewriteNode (node: any, origin?: string): any {
           if (node.attrs[i].name === "src") {
             node.attrs.push({ name: "data-src", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
-          } else if (node.attrs[i].name === "style") {
-            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
-            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
           }
         }
         break;
@@ -249,15 +225,7 @@ function rewriteNode (node: any, origin?: string): any {
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
           } else if (node.attrs[i].name === "poster") {
             node.attrs.push({ name: "data-poster", value: node.attrs[i].value });
-          }
-        }
-        break;
-
-      default:
-        for (let i in node.attrs) {
-          if (node.attrs[i].name === "style") {
-            node.attrs.push({ name: "data-style", value: node.attrs[i].value });
-            node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
+            node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
           }
         }
     }
