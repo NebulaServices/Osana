@@ -25,9 +25,6 @@ module.exports = {
     path: path.resolve(__dirname, "dist"),
     filename: "osana.[name].js",
   },
-  optimization: {
-    minimize: false,
-  },
   devServer: {
     static: {
       directory: path.join(__dirname, "static"),
