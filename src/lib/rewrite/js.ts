@@ -80,8 +80,8 @@ function getAST (js: string): any {
     return parseScript(js, {
       module: true
     });
-  } catch (error) {
-    console.log(error)
+  } catch (err) {
+    console.error(err);
     return parseScript("");
   }
 }

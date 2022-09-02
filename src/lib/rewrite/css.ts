@@ -1,7 +1,9 @@
 // import { parse, walk, generate } from "css-tree";
 import rewriteURL from "./url";
+let originURL: any;
 
 export default function rewriteCSS (css: string, origin?: string): string {
+  originURL = origin;
   // const ast = parse(css);
   // walk(ast, (node) => {
   //   if (node.type === "Url") {
@@ -9,6 +11,12 @@ export default function rewriteCSS (css: string, origin?: string): string {
   //   }
   // });
   // return generate(ast);
+  // /(?<=url\("?'?)[^"'][\S]*[^"'](?="?'?\);?)/g
 
-  return css = css.replace(/(?<=url\("?'?)[^"'][\S]*[^"'](?="?'?\);?)/g, rewriteURL('$&', origin));
+  return css.replace(/(?<=url\("?'?)[^"'][\S]*[^"'](?="?'?\);?)/g, rewriteCSSURL);
+}
+
+function rewriteCSSURL(match: string): string {
+  let url = rewriteURL(match, originURL);
+  return url;
 }
