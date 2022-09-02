@@ -1,6 +1,5 @@
 import { parseScript } from "meriyah";
 import { generate } from "esotope-hammerhead";
-// import rewriteURL from './url';
 
 export default function rewriteJS (js: string, origin?: string): string {
   let AST: any = getAST(js);

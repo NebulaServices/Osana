@@ -22,7 +22,7 @@ export default function rewriteURL (url: string, origin?: string): string {
     try {
       return `${config.prefix}${config.codec.encode(new URL(url, fakeLocation).href)}`;
     } catch {
-      // return `${config.prefix}${config.codec.encode(url)}`
+      return `${config.prefix}${config.codec.encode(url)}`
     }
   }
 }

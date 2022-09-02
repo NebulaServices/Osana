@@ -40,26 +40,55 @@ self.OsanaServiceWorker = class OsanaServiceWorker {
     const response = await this.bareClient.fetch(requestURL, bareRequestData);
     let responseStatus = response.rawResponse.status;
     const responseHeaders = this.bundle.rewrite.headers.response(response.rawHeaders as any, requestURL);
+    let type = responseHeaders["Content-Type"] as string;
 
     let responseData: any = "";
-    if (/text\/html/.test(responseHeaders["Content-Type"] as string)) {
-      responseData = 
-        `<head>
-          <script src="${this.config.files.bundle}"></script>
-          <script src="${this.config.files.config}"></script>
-          <script src="${this.config.files.client}"></script>
-          <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">
-          <link rel="icon" href="${requestURL.origin}/favicon.ico">
-          ${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${this.bundle.rewrite.url(responseHeaders["location"] as string)}">` : ""}
-        </head>`;
-      responseData += this.bundle.rewrite.html(await response.text(), url);
-    } else if (/text\/css/.test(responseHeaders["Content-Type"] as string) || event.request.destination === "style") {
-      responseData = this.bundle.rewrite.css(await response.text(), url);
-      /* /(application|text)\/javascript/ */
-    } else if (/application\/javascript/.test(responseHeaders["Content-Type"] as string) || event.request.destination === "script") {
-      responseData = this.bundle.rewrite.js(await response.text());
-    } else {
-      responseData = await response.arrayBuffer();
+
+    /* If you want to add this back you can, I just wanted to use a switch statement for code readability */
+    
+    // if (/text\/html/.test(responseHeaders["Content-Type"] as string)) {
+    //   responseData = 
+    //     `<head>
+    //       <script src="${this.config.files.bundle}"></script>
+    //       <script src="${this.config.files.config}"></script>
+    //       <script src="${this.config.files.client}"></script>
+    //       <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">
+    //       <link rel="icon" href="${requestURL.origin}/favicon.ico">
+    //       ${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${this.bundle.rewrite.url(responseHeaders["location"] as string)}">` : ""}
+    //     </head>`;
+    //   responseData += this.bundle.rewrite.html(await response.text(), url);
+    // } else if (/text\/css/.test(responseHeaders["Content-Type"] as string) || event.request.destination === "style") {
+    //   responseData = this.bundle.rewrite.css(await response.text(), url);
+    // } else if (/application\/javascript/.test(responseHeaders["Content-Type"] as string) || event.request.destination === "script") {
+    //   responseData = this.bundle.rewrite.js(await response.text());
+    // } else {
+    //   responseData = await response.arrayBuffer();
+    // }
+    
+    switch (true) {
+      case /text\/html/.test(type):
+        responseData = 
+          `<head>
+            <script src="${this.config.files.bundle}"></script>
+            <script src="${this.config.files.config}"></script>
+            <script src="${this.config.files.client}"></script>
+            <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">
+            <link rel="icon" href="${requestURL.origin}/favicon.ico">
+            ${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${this.bundle.rewrite.url(responseHeaders["location"] as string)}">` : ""}
+          </head>`;
+        responseData += this.bundle.rewrite.html(await response.text(), url);
+        break;
+
+      case (/text\/css/.test(type) || event.request.destination === "style"):
+        responseData = this.bundle.rewrite.css(await response.text(), url);
+        break;
+
+      case (/(text|application)\/javascript/.test(type) || event.request.destination === "script"):
+        responseData = this.bundle.rewrite.js(await response.text(), url);
+        break;
+
+      default:
+        responseData = await response.arrayBuffer();
     }
 
     return new Response(responseData, {
