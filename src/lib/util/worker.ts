@@ -60,7 +60,7 @@ self.OsanaServiceWorker = class OsanaServiceWorker {
     // } else if (/text\/css/.test(responseHeaders["Content-Type"] as string) || event.request.destination === "style") {
     //   responseData = this.bundle.rewrite.css(await response.text(), url);
     // } else if (/application\/javascript/.test(responseHeaders["Content-Type"] as string) || event.request.destination === "script") {
-    //   responseData = this.bundle.rewrite.js(await response.text());
+    //   responseData = this.bundle.rewrite.js(await response.text(), url);
     // } else {
     //   responseData = await response.arrayBuffer();
     // }

@@ -6,7 +6,7 @@ export default function rewriteURL (url: string, origin?: string): string {
   let fakeLocation: URL;
 
   if ("window" in self) {
-    fakeLocation = new URL(config.codec.decode(location.pathname.replace(new RegExp(`^${config.prefix}`), "")));
+    fakeLocation = new URL(config.codec.decode(location.href.slice((location.origin + config.prefix).length)));
   }
 
   if (origin) {

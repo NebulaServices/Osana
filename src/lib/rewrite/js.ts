@@ -1,5 +1,6 @@
 import { parseScript } from "meriyah";
 import { generate } from "esotope-hammerhead";
+import rewriteURL from "./url";
 
 export default function rewriteJS (js: string, origin?: string): string {
   let AST: any = getAST(js);
@@ -12,6 +13,8 @@ export default function rewriteJS (js: string, origin?: string): string {
           node.object = rewriteNode(node.object);
         }
       }
+    } else if (node.type === "Literal" && (parent.type === "ImportDeclaration" || parent.type === "ImportExpression" || parent.type === "ExportNamedDeclaration" || parent.type === "ExportAllDeclaration")) {
+      node.value = rewriteURL(node.value, origin);
     }
     // if (node.type === "Identifier") {
     //   if (node.name !== "window") {
