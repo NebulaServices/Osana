@@ -74,7 +74,7 @@ self.OsanaServiceWorker = class OsanaServiceWorker {
             <script src="${this.config.files.client}"></script>
             <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">
             <link rel="icon" href="${requestURL.origin}/favicon.ico">
-            ${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${this.bundle.rewrite.url(responseHeaders["location"] as string)}">` : ""}
+            ${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${this.bundle.rewrite.url.rewriteURL(responseHeaders["location"] as string)}">` : ""}
           </head>`;
         responseData += this.bundle.rewrite.html(await response.text(), url);
         break;

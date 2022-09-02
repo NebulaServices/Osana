@@ -33,8 +33,12 @@ export function unwriteURL (url: string): string {
   let newURL: URL;
   if (/^https?:\/\//.test(url)) {
     newURL = new URL(config.codec.decode(new URL(url).pathname.slice(config.prefix.length)));
+  } else if (/^data:/.test(url)) {
+    return url;
   } else {
+    console.log(url);
     newURL = new URL(config.codec.decode(url.slice(config.prefix.length)));
+    console.log(newURL.href)
   }
   return newURL.href;
 }

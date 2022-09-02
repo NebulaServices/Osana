@@ -1,4 +1,5 @@
 import "./element";
+import "./style";
 import "./storage";
 import "./navigator";
 import MessageProxy from "./message";

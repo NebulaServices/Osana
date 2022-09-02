@@ -1,4 +1,4 @@
-const rewriteURL = self.__osana$bundle.rewrite.url;
+const rewriteURL = self.__osana$bundle.rewrite.url.rewriteURL;
 const config = self.__osana$config;
 
 const pushState = new Proxy(window.history.pushState, {

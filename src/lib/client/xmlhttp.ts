@@ -1,4 +1,4 @@
-const rewriteURL = self.__osana$bundle.rewrite.url;
+const rewriteURL = self.__osana$bundle.rewrite.url.rewriteURL;
 
 const XMLOpen = window.XMLHttpRequest.prototype.open;
 export default function (...args: any) {

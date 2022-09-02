@@ -2,7 +2,7 @@ import rewriteCSS from "./lib/rewrite/css";
 import * as rewriteHeaders from "./lib/rewrite/headers";
 import rewriteHTML, { rewriteSrcset } from "./lib/rewrite/html";
 import rewriteJS from "./lib/rewrite/js";
-import rewriteURL from "./lib/rewrite/url";
+import rewriteURL, { unwriteURL } from "./lib/rewrite/url";
 import BareClient from "@tomphttp/bare-client";
 import { encodeProtocol } from "@tomphttp/bare-server-node/dist/encodeProtocol";
 import * as codecs from "./lib/util/codecs";
@@ -19,7 +19,10 @@ declare global {
         html: typeof rewriteHTML;
         srcset: typeof rewriteSrcset;
         headers: typeof rewriteHeaders;
-        url: typeof rewriteURL;
+        url: {
+          rewriteURL: typeof rewriteURL;
+          unwriteURL: typeof unwriteURL;
+        };
         protocol: typeof encodeProtocol;
       };
       BareClient: typeof BareClient;
@@ -34,7 +37,10 @@ self.__osana$bundle = {
     html: rewriteHTML,
     srcset: rewriteSrcset,
     js: rewriteJS,
-    url: rewriteURL,
+    url: {
+      rewriteURL,
+      unwriteURL
+    },
     headers: rewriteHeaders,
     protocol: encodeProtocol
   },

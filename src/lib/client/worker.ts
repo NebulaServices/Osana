@@ -1,4 +1,4 @@
-const rewriteURL = self.__osana$bundle.rewrite.url;
+const rewriteURL = self.__osana$bundle.rewrite.url.rewriteURL;
 
 export default new Proxy(window.Worker, {
   construct (target: any, args: any[], newTarget: any): any {
