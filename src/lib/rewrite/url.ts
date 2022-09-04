@@ -27,6 +27,8 @@ export default function rewriteURL (url: string, origin?: string): string {
   }
 }
 
+
+// apparently this entire function doesn't work and i don't know why, so it needs to be fixed
 export function unwriteURL (url: string): string {
   const config = self.__osana$config;
   if (!url) return url;
@@ -36,9 +38,7 @@ export function unwriteURL (url: string): string {
   } else if (/^(#|about|data|mailto|javascript):/.test(url)) {
     return url;
   } else {
-    console.log(url);
     newURL = new URL(config.codec.decode(url.slice(config.prefix.length)));
-    console.log(newURL.href)
   }
   return newURL.href;
 }

@@ -1,1 +1,1 @@
-Object.defineProperty(navigator, "serviceWorker", {});
+Object.defineProperty(navigator, 'serviceWorker', {});

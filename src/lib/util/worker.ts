@@ -67,16 +67,26 @@ self.OsanaServiceWorker = class OsanaServiceWorker {
     
     switch (true) {
       case /text\/html/.test(type):
-        responseData = 
-          `<head>
+        const head = 
+          `<head$1>
             <script src="${this.config.files.bundle}"></script>
             <script src="${this.config.files.config}"></script>
             <script src="${this.config.files.client}"></script>
             <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">
             <link rel="icon" href="${requestURL.origin}/favicon.ico">
             ${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${this.bundle.rewrite.url.rewriteURL(responseHeaders["location"] as string)}">` : ""}
-          </head>`;
-        responseData += this.bundle.rewrite.html(await response.text(), url);
+          `;
+        // responseData = 
+        //   `<!DOCTYPE html>
+        //     <head>
+        //       <script src="${this.config.files.bundle}"></script>
+        //       <script src="${this.config.files.config}"></script>
+        //       <script src="${this.config.files.client}"></script>
+        //       <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">
+        //       <link rel="icon" href="${requestURL.origin}/favicon.ico">
+        //       ${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${this.bundle.rewrite.url.rewriteURL(responseHeaders["location"] as string)}">` : ""}
+        //     </head>`;
+        responseData = this.bundle.rewrite.html(await response.text(), url).replace(/<head(.*?)>/g, head);
         break;
 
       case (/text\/css/.test(type) || event.request.destination === "style"):

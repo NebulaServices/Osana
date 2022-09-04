@@ -60,11 +60,12 @@ Object.keys(attributes).forEach((attribute) => {
       const attr = Object.getOwnPropertyDescriptor(element.prototype, attribute);
       if (attribute !== "srcset") {
         Object.defineProperty(element.prototype, attribute, {
-          get () {
-            return unwriteURL(attr.get.call(this));
-          },
+          // get () {
+          // this is commented because the unwriteURL function is broken, see ../rewrite/url.ts
+          //   return unwriteURL(attr.get.call(this));
+          // },
           set (value) {
-            // this.dataset[`data-${attribute}`] = value;
+            // this.dataset[`data-osana_${attribute}`] = value;
             return attr.set.call(this, rewriteURL(value));
           }
         });
