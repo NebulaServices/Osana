@@ -65,13 +65,14 @@ Object.keys(attributes).forEach((attribute) => {
           //   return unwriteURL(attr.get.call(this));
           // },
           set (value) {
-            // this.dataset[`data-osana_${attribute}`] = value;
+            this.dataset[`osana_${attribute}`] = value;
             return attr.set.call(this, rewriteURL(value));
           }
         });
       } else {
         Object.defineProperty(element.prototype, attribute, {
           set (value) {
+            this.dataset[`osana_${attribute}`] = value;
             return attr.set.call(this, rewriteSrcset(value));
           },
         });

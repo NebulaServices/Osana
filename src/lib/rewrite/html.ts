@@ -28,16 +28,20 @@ function rewriteNode (node: any, origin?: string): any {
       case "script":
         let src: boolean = false;
         for (let i in node.attrs) {
-          if (node.attrs[i].name === "src") {
-            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
-            node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
-            src = true;
-          } else if (node.attrs[i].name === "integrity") {
-            node.attrs.push({ name: "data-integrity", value: node.attrs[i].value });
-            node.attrs[i].value = "";
-          } else if (node.attrs[i].name === "nonce") {
-            node.attrs.push({ name: "data-nonce", value: node.attrs[i].value });
-            node.attrs[i].value = "";
+          if (node.attrs.includes({ name: "type", value: "application/json" })) {
+            return;
+          } else {
+            if (node.attrs[i].name === "src") {
+              node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+              node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+              src = true;
+            } else if (node.attrs[i].name === "integrity") {
+              node.attrs.push({ name: "data-integrity", value: node.attrs[i].value });
+              node.attrs[i].value = "";
+            } else if (node.attrs[i].name === "nonce") {
+              node.attrs.push({ name: "data-nonce", value: node.attrs[i].value });
+              node.attrs[i].value = "";
+            }
           }
         }
 

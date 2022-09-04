@@ -67,7 +67,9 @@ self.OsanaServiceWorker = class OsanaServiceWorker {
     
     switch (true) {
       case /text\/html/.test(type):
-        const head = 
+        let responseText = await response.text();
+        if (responseText.includes("<head>")) {
+          const head = 
           `<head$1>
             <script src="${this.config.files.bundle}"></script>
             <script src="${this.config.files.config}"></script>
@@ -76,6 +78,21 @@ self.OsanaServiceWorker = class OsanaServiceWorker {
             <link rel="icon" href="${requestURL.origin}/favicon.ico">
             ${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${this.bundle.rewrite.url.rewriteURL(responseHeaders["location"] as string)}">` : ""}
           `;
+
+          responseData = this.bundle.rewrite.html(await responseText, url).replace(/<head(.*?)>/g, head);
+        } else {
+          responseData = 
+          `<head>
+            <script src="${this.config.files.bundle}"></script>
+            <script src="${this.config.files.config}"></script>
+            <script src="${this.config.files.client}"></script>
+            <link rel="icon" href="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAABCAYAAAAfFcSJAAAAAXNSR0IArs4c6QAAAA1JREFUGFdjYGBkZAAAAAoAAx9k7/gAAAAASUVORK5CYIIA">
+            <link rel="icon" href="${requestURL.origin}/favicon.ico">
+            ${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${this.bundle.rewrite.url.rewriteURL(responseHeaders["location"] as string)}">` : ""}
+          </head>`;
+
+          responseData += this.bundle.rewrite.html(responseText, url);
+        }
         // responseData = 
         //   `<!DOCTYPE html>
         //     <head>
@@ -86,7 +103,6 @@ self.OsanaServiceWorker = class OsanaServiceWorker {
         //       <link rel="icon" href="${requestURL.origin}/favicon.ico">
         //       ${(responseStatus === 301 && responseHeaders["location"]) ? `<meta http-equiv="refresh" content="0; url=${this.bundle.rewrite.url.rewriteURL(responseHeaders["location"] as string)}">` : ""}
         //     </head>`;
-        responseData = this.bundle.rewrite.html(await response.text(), url).replace(/<head(.*?)>/g, head);
         break;
 
       case (/text\/css/.test(type) || event.request.destination === "style"):

@@ -16,13 +16,7 @@ export default function rewriteJS (js: string, origin?: string): string {
     } else if (node.type === "Literal" && (parent.type === "ImportDeclaration" || parent.type === "ImportExpression" || parent.type === "ExportNamedDeclaration" || parent.type === "ExportAllDeclaration")) {
       node.value = rewriteURL(node.value, origin);
     }
-    // if (node.type === "Identifier") {
-    //   if (node.name !== "window") {
-    //     if (parent.type !== "MemberExpression") {
-    //       node = rewriteNode(node);
-    //     }
-    //   }
-    // }
+    
     return node;
   });
 
