@@ -11,15 +11,16 @@ function rewriteNode (node: any, origin?: string): any {
   if (node.tagName) {
     for (let i in node.attrs) {
       if (node.attrs[i].name === "style") {
-        node.attrs.push({ name: "data-style", value: node.attrs[i].value });
+        node.attrs.push({ name: "data-osana_style", value: node.attrs[i].value });
         node.attrs[i].value = rewriteCSS(node.attrs[i].value, origin);
       }
     }
+
     switch (node.tagName.toLowerCase()) {
       case "a":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "href") {
-            node.attrs.push({ name: "data-href", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_href", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
           }
         }
@@ -32,14 +33,14 @@ function rewriteNode (node: any, origin?: string): any {
             return;
           } else {
             if (node.attrs[i].name === "src") {
-              node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+              node.attrs.push({ name: "data-osana_src", value: node.attrs[i].value });
               node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
               src = true;
             } else if (node.attrs[i].name === "integrity") {
-              node.attrs.push({ name: "data-integrity", value: node.attrs[i].value });
+              node.attrs.push({ name: "data-osana_integrity", value: node.attrs[i].value });
               node.attrs[i].value = "";
             } else if (node.attrs[i].name === "nonce") {
-              node.attrs.push({ name: "data-nonce", value: node.attrs[i].value });
+              node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
               node.attrs[i].value = "";
             }
           }
@@ -53,15 +54,13 @@ function rewriteNode (node: any, origin?: string): any {
         break;
       
       case "style":
-        for (let i in node.attrs) {
-          if (node.attrs[i].name === "integrity") {
-            node.attrs.push({ name: "data-integrity", value: node.attrs[i].value });
-            node.attrs[i].value = "";
-          } else if (node.attrs[i].name === "nonce") {
-            node.attrs.push({ name: "data-nonce", value: node.attrs[i].value });
-            node.attrs[i].value = "";
-          }
-        }
+        // i don't think there is any attribute-related rewriting for <style> so i will have this commented out
+        // for (let i in node.attrs) {
+        //   if (node.attrs[i].name === "nonce") {
+        //     node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
+        //     node.attrs[i].value = "";
+        //   }
+        // }
         for (let i in node.childNodes) {
           node.childNodes[i].value = rewriteCSS(node.childNodes[i].value, origin);
         }
@@ -70,13 +69,13 @@ function rewriteNode (node: any, origin?: string): any {
       case "link":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "href") {
-            node.attrs.push({ name: "data-href", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_href", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
           } else if (node.attrs[i].name === "integrity") {
-            node.attrs.push({ name: "data-integrity", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_integrity", value: node.attrs[i].value });
             node.attrs[i].value = "";
           } else if (node.attrs[i].name === "nonce") {
-            node.attrs.push({ name: "data-nonce", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
             node.attrs[i].value = "";
           }
         }
@@ -85,11 +84,14 @@ function rewriteNode (node: any, origin?: string): any {
       case "img":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "src") {
-            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_src", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
           } else if (node.attrs[i].name === "srcset") {
-            node.attrs.push({ name: "data-srcset", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_srcset", value: node.attrs[i].value });
             node.attrs[i].value = rewriteSrcset(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "nonce") {
+            node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
+            node.attrs[i].value = "";
           }
         }
         break;
@@ -97,11 +99,14 @@ function rewriteNode (node: any, origin?: string): any {
       case "source":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "src") {
-            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_src", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
           } else if (node.attrs[i].name === "srcset") {
-            node.attrs.push({ name: "data-srcset", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_srcset", value: node.attrs[i].value });
             node.attrs[i].value = rewriteSrcset(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "nonce") {
+            node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
+            node.attrs[i].value = "";
           }
         }
         break;
@@ -109,8 +114,11 @@ function rewriteNode (node: any, origin?: string): any {
       case "form":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "action") {
-            node.attrs.push({ name: "data-action", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_action", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "nonce") {
+            node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
+            node.attrs[i].value = "";
           }
         }
         break;
@@ -118,8 +126,11 @@ function rewriteNode (node: any, origin?: string): any {
       case "iframe":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "src") {
-            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_src", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "nonce") {
+            node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
+            node.attrs[i].value = "";
           }
         }
         break;
@@ -144,17 +155,23 @@ function rewriteNode (node: any, origin?: string): any {
       case "area":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "href") {
-            node.attrs.push({ name: "data-href", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_href", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
-          } 
+          } else if (node.attrs[i].name === "nonce") {
+            node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
+            node.attrs[i].value = "";
+          }
         }
         break;
       
       case "base":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "href") {
-            node.attrs.push({ name: "data-href", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_href", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "nonce") {
+            node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
+            node.attrs[i].value = "";
           }
         }
         break;
@@ -162,7 +179,7 @@ function rewriteNode (node: any, origin?: string): any {
       case "body":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "background") {
-            node.attrs.push({ name: "data-background", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_background", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
           }
         }
@@ -171,7 +188,7 @@ function rewriteNode (node: any, origin?: string): any {
       case "input":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "src") {
-            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_src", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
           }
         }
@@ -180,8 +197,11 @@ function rewriteNode (node: any, origin?: string): any {
       case "object":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "data") {
-            node.attrs.push({ name: "data-data", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_data", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "nonce") {
+            node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
+            node.attrs[i].value = "";
           }
         }
         break;
@@ -189,8 +209,11 @@ function rewriteNode (node: any, origin?: string): any {
       case "audio":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "src") {
-            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_src", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "nonce") {
+            node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
+            node.attrs[i].value = "";
           }
         }
         break;
@@ -198,7 +221,7 @@ function rewriteNode (node: any, origin?: string): any {
       case "button":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "formaction") {
-            node.attrs.push({ name: "data-formaction", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_formaction", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
           }
         }
@@ -207,8 +230,11 @@ function rewriteNode (node: any, origin?: string): any {
       case "embed":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "src") {
-            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_src", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "nonce") {
+            node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
+            node.attrs[i].value = "";
           }
         }
         break;
@@ -216,8 +242,11 @@ function rewriteNode (node: any, origin?: string): any {
       case "track":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "src") {
-            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_src", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "nonce") {
+            node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
+            node.attrs[i].value = "";
           }
         }
         break;
@@ -225,11 +254,14 @@ function rewriteNode (node: any, origin?: string): any {
       case "video":
         for (let i in node.attrs) {
           if (node.attrs[i].name === "src") {
-            node.attrs.push({ name: "data-src", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_src", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
           } else if (node.attrs[i].name === "poster") {
-            node.attrs.push({ name: "data-poster", value: node.attrs[i].value });
+            node.attrs.push({ name: "data-osana_poster", value: node.attrs[i].value });
             node.attrs[i].value = rewriteURL(node.attrs[i].value, origin);
+          } else if (node.attrs[i].name === "nonce") {
+            node.attrs.push({ name: "data-osana_nonce", value: node.attrs[i].value });
+            node.attrs[i].value = "";
           }
         }
     }
