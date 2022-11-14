@@ -3,7 +3,10 @@ import rewriteURL from "./url";
 import rewriteCSS from "./css";
 import rewriteJS from "./js";
 
-export default function rewriteHTML (html: string, origin?: string): string {
+export default function rewriteHTML (html: any, origin?: string) {
+  if (typeof(html) != "string") {
+    html = html.toString()
+  }
   return serialize(rewriteNode(parse(html), origin));
 }
 
